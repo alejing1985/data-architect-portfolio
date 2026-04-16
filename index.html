@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Architect Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:        #0f0e0c;
+  --ink-mid:    #3a3830;
+  --ink-muted:  #7a7870;
+  --ink-faint:  #c8c6be;
+  --paper:      #f7f5f0;
+  --paper-warm: #efede6;
+  --paper-card: #faf9f6;
+  --accent:     #1a5c42;
+  --accent-light:#d4ece2;
+  --accent-mid: #2d7a59;
+  --amber:      #c47d0e;
+  --amber-light:#faecd0;
+  --azure:      #1a4a7a;
+  --azure-light:#ddeaf7;
+  --coral:      #b53d20;
+  --coral-light:#fce8e2;
+  --snow:       #4a2a8a;
+  --snow-light: #ede8f8;
+  --rule:       rgba(15,14,12,0.1);
+  --rule-strong:rgba(15,14,12,0.2);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Geist', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(247,245,240,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+  padding: 0 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+}
+.nav-name { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 400; letter-spacing: 0.02em; color: var(--ink-mid); }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a { font-size: 12px; color: var(--ink-muted); text-decoration: none; font-family: 'Geist Mono', monospace; transition: color 0.2s; }
+.nav-links a:hover { color: var(--accent); }
+
+/* ── HERO ── */
+.hero {
+  padding: 10rem 3rem 6rem;
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 320px; gap: 4rem; align-items: end;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-eyebrow { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: clamp(40px, 5.5vw, 64px); font-weight: 300; line-height: 1.05; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero-desc { font-size: 16px; color: var(--ink-mid); line-height: 1.8; max-width: 500px; font-weight: 300; }
+.hero-sidebar { padding-bottom: 0.5rem; }
+.sidebar-block { border-top: 1px solid var(--rule-strong); padding: 1.1rem 0; }
+.sidebar-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.4rem; }
+.sidebar-value { font-size: 13px; font-weight: 400; color: var(--ink); line-height: 1.55; }
+
+/* ── PRINCIPLES ── */
+.principles { max-width: 1100px; margin: 0 auto; padding: 0 3rem 5rem; }
+.principles-heading { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 1.25rem; }
+.principles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.principle-card { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.75rem; }
+.principle-num { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--accent); margin-bottom: 1rem; }
+.principle-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 300; line-height: 1.25; margin-bottom: 0.75rem; letter-spacing: -0.01em; font-style: italic; }
+.principle-text { font-size: 13px; color: var(--ink-mid); line-height: 1.75; font-weight: 300; }
+.principle-text strong { font-weight: 500; color: var(--ink); }
+
+/* ── CASE INDEX ── */
+.case-index { max-width: 1100px; margin: 0 auto; padding: 0 3rem 5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.index-card { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.75rem; text-decoration: none; color: inherit; transition: border-color 0.2s; display: block; }
+.index-card:hover { border-color: var(--rule-strong); }
+.index-num { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-bottom: 0.5rem; letter-spacing: 0.08em; }
+.index-title { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 300; line-height: 1.35; margin-bottom: 0.5rem; }
+.index-tag { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); line-height: 1.7; }
+
+/* ── SECTIONS ── */
+.section { max-width: 1100px; margin: 0 auto; padding: 5rem 3rem; border-top: 1px solid var(--rule); }
+.section-header { display: grid; grid-template-columns: 80px 1fr; gap: 2rem; margin-bottom: 3rem; align-items: start; }
+.section-num { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-faint); padding-top: 6px; letter-spacing: 0.08em; }
+.section-title { font-family: 'Fraunces', serif; font-size: 34px; font-weight: 300; line-height: 1.1; letter-spacing: -0.02em; }
+.section-sub { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-muted); margin-top: 0.5rem; }
+
+/* ── CASE HERO BANNER ── */
+.case-hero { background: var(--ink); color: var(--paper); border-radius: 16px; padding: 3.5rem; margin-bottom: 1.25rem; position: relative; overflow: hidden; }
+.case-hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 300px; height: 300px; border-radius: 50%; background: rgba(26,92,66,0.15); }
+.case-hero.c2::before { background: rgba(74,42,138,0.15); }
+.case-tag { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(247,245,240,0.4); margin-bottom: 1.25rem; display: block; }
+.case-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 300; line-height: 1.2; margin-bottom: 0.75rem; position: relative; z-index: 1; letter-spacing: -0.01em; }
+.case-subtitle { font-size: 14px; color: rgba(247,245,240,0.6); font-weight: 300; position: relative; z-index: 1; max-width: 620px; line-height: 1.75; }
+
+/* ── CONTENT BLOCKS ── */
+.block-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+.block-grid.cols-1 { grid-template-columns: 1fr; }
+.case-block { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.6rem; }
+.case-block.full { grid-column: 1 / -1; }
+.accent-l { border-left: 3px solid var(--accent); }
+.amber-l  { border-left: 3px solid var(--amber); }
+.azure-l  { border-left: 3px solid var(--azure); }
+.coral-l  { border-left: 3px solid var(--coral); }
+.snow-l   { border-left: 3px solid var(--snow); }
+.block-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.65rem; }
+.block-text { font-size: 14px; line-height: 1.78; color: var(--ink-mid); font-weight: 300; }
+.block-text strong { font-weight: 500; color: var(--ink); }
+
+/* ── MODEL BADGE ── */
+.model-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--paper-warm); border: 1px solid var(--rule-strong); border-radius: 999px; padding: 5px 14px 5px 10px; font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-mid); margin-bottom: 0.75rem; }
+.model-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
+/* ── BEFORE/AFTER ── */
+.before-after { display: grid; grid-template-columns: 1fr 40px 1fr; align-items: center; margin-bottom: 1.25rem; }
+.ba-panel { background: var(--paper-card); border: 1px solid var(--rule); padding: 1.6rem; }
+.ba-panel.before { border-radius: 12px 0 0 12px; border-right: none; border-top: 3px solid var(--coral); }
+.ba-panel.after  { border-radius: 0 12px 12px 0; border-left: none; border-top: 3px solid var(--accent); }
+.ba-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; margin-bottom: 0.85rem; }
+.ba-label.bl { color: var(--coral); } .ba-label.al { color: var(--accent); }
+.ba-arrow { display: flex; align-items: center; justify-content: center; color: var(--ink-faint); font-size: 16px; background: var(--paper-card); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); align-self: stretch; }
+.ba-item { display: flex; align-items: start; gap: 9px; font-size: 13px; color: var(--ink-mid); margin-bottom: 0.5rem; line-height: 1.55; font-weight: 300; }
+.ba-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+.ba-dot.red { background: var(--coral); } .ba-dot.green { background: var(--accent); }
+
+/* ── MEDALLION ── */
+.medallion-wrap { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.6rem; margin-bottom: 1.25rem; }
+.medallion { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border-radius: 8px; overflow: hidden; margin: 0.75rem 0 1rem; }
+.med-layer { padding: 1rem; }
+.med-layer.bronze { background: #f5ede4; } .med-layer.silver { background: #eaeef4; } .med-layer.gold { background: #faf3e0; }
+.med-icon { font-size: 18px; margin-bottom: 0.3rem; display: block; }
+.med-name { font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 500; margin-bottom: 0.3rem; }
+.med-desc { font-size: 11px; color: var(--ink-muted); line-height: 1.55; }
+.med-layer.bronze .med-name { color: #8b5a2b; } .med-layer.silver .med-name { color: var(--azure); } .med-layer.gold .med-name { color: #7a5a00; }
+.silver-types { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border-radius: 8px; overflow: hidden; margin-top: 0.5rem; }
+.silver-card { background: var(--azure-light); padding: 1rem; }
+.silver-card-title { font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 500; color: var(--azure); margin-bottom: 0.35rem; }
+.silver-card-text { font-size: 12px; color: var(--ink-mid); line-height: 1.6; font-weight: 300; }
+
+/* ── TRADE-OFF TABLE ── */
+.tradeoff-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 0.75rem; }
+.tradeoff-table th { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); font-weight: 400; padding: 0 1rem 0.65rem 0; text-align: left; border-bottom: 1px solid var(--rule-strong); }
+.tradeoff-table td { padding: 0.65rem 1rem 0.65rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--ink-mid); line-height: 1.5; font-weight: 300; }
+.tradeoff-table td:first-child { font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 400; color: var(--ink); white-space: nowrap; }
+.gain-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: middle; }
+.cost-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--coral); margin-right: 6px; vertical-align: middle; }
+
+/* ── TRI GRID ── */
+.tri-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border-radius: 8px; overflow: hidden; margin-top: 0.75rem; }
+.tri-card { background: var(--paper-warm); padding: 1rem; }
+.tri-num { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-bottom: 0.35rem; }
+.tri-title { font-size: 13px; font-weight: 500; margin-bottom: 0.3rem; }
+.tri-text { font-size: 12px; color: var(--ink-mid); line-height: 1.6; font-weight: 300; }
+
+/* ── DATA PRODUCTS ── */
+.dp-row { display: flex; gap: 0.5rem; align-items: center; margin: 0.75rem 0; }
+.dp-node { border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 11px; font-family: 'Geist Mono', monospace; flex: 1; text-align: center; line-height: 1.4; }
+.dp-node.source  { background: #f5ede4; color: #8b5a2b; border: 1px solid rgba(139,90,43,0.2); }
+.dp-node.master  { background: var(--azure-light); color: var(--azure); border: 1px solid rgba(26,74,122,0.2); }
+.dp-node.insight { background: var(--accent-light); color: var(--accent); border: 1px solid rgba(26,92,66,0.2); }
+.dp-node.consumer{ background: var(--amber-light); color: #7a5a00; border: 1px solid rgba(196,125,14,0.2); }
+.dp-arrow { color: var(--ink-faint); font-size: 12px; flex-shrink: 0; }
+
+/* ── TECH PILLS ── */
+.tech-group { margin-bottom: 0.75rem; }
+.tech-group-label { font-family: 'Geist Mono', monospace; font-size: 9px; color: var(--ink-muted); margin-bottom: 0.35rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.tech-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.tech-pill { font-family: 'Geist Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--rule-strong); color: var(--ink-mid); background: var(--paper-warm); }
+.tech-pill.b { background: var(--azure-light); border-color: rgba(26,74,122,0.2); color: var(--azure); }
+.tech-pill.g { background: var(--accent-light); border-color: rgba(26,92,66,0.2); color: var(--accent); }
+.tech-pill.a { background: var(--amber-light); border-color: rgba(196,125,14,0.2); color: var(--amber); }
+.tech-pill.s { background: var(--snow-light); border-color: rgba(74,42,138,0.2); color: var(--snow); }
+
+/* ── DOMAINS ── */
+.domains-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border-radius: 8px; overflow: hidden; margin: 0.75rem 0; }
+.domain-card { background: var(--paper-warm); padding: 0.9rem; text-align: center; }
+.domain-initial { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 500; margin: 0 auto 0.4rem; }
+.domain-name { font-size: 12px; font-weight: 400; color: var(--ink); }
+.domain-sub { font-size: 10px; color: var(--ink-muted); font-family: 'Geist Mono', monospace; margin-top: 2px; }
+
+/* ── STACK DECISIONS ── */
+.stack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border-radius: 8px; overflow: hidden; margin-top: 0.75rem; }
+.stack-card { background: var(--paper-warm); padding: 1.1rem; }
+.stack-tool { font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 500; color: var(--snow); margin-bottom: 0.35rem; }
+.stack-why { font-size: 12px; color: var(--ink-mid); line-height: 1.65; font-weight: 300; }
+.stack-tradeoff { font-size: 11px; color: var(--ink-muted); margin-top: 0.45rem; padding-top: 0.45rem; border-top: 1px solid var(--rule); font-style: italic; }
+
+/* ── ADR ── */
+.adr-card { background: var(--paper-card); border: 1px solid var(--rule); border-left: 3px solid var(--amber); border-radius: 0 12px 12px 0; padding: 1.6rem; margin-bottom: 1rem; }
+.adr-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.85rem; gap: 1rem; }
+.adr-id { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); }
+.adr-badge { font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.08em; padding: 3px 10px; border-radius: 999px; text-transform: uppercase; flex-shrink: 0; }
+.s-acc  { background: var(--accent-light); color: var(--accent); }
+.s-open { background: var(--amber-light); color: var(--amber); }
+.adr-title { font-size: 14px; font-weight: 500; margin-bottom: 0.65rem; }
+.adr-s { margin-bottom: 0.65rem; }
+.adr-s-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.25rem; }
+.adr-s-text { font-size: 13px; color: var(--ink-mid); line-height: 1.65; font-weight: 300; }
+
+/* ── QUOTE ── */
+.quote-block { background: var(--ink); color: var(--paper); border-radius: 12px; padding: 2.25rem; margin-bottom: 2rem; }
+.quote-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(247,245,240,0.4); margin-bottom: 0.65rem; }
+.quote-text { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 300; line-height: 1.55; font-style: italic; }
+
+/* ── LEARNINGS ── */
+.learnings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; }
+.learning-item { display: flex; gap: 1rem; align-items: start; }
+.learning-num { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 300; color: var(--ink-faint); line-height: 1; flex-shrink: 0; width: 46px; }
+.learning-title { font-size: 14px; font-weight: 500; margin-bottom: 0.25rem; padding-top: 4px; }
+.learning-text { font-size: 13px; color: var(--ink-mid); line-height: 1.65; font-weight: 300; }
+
+/* ── CASE DIVIDER ── */
+.case-divider { max-width: 1100px; margin: 0 auto; padding: 3rem 3rem 0; border-top: 2px solid var(--ink); }
+.divider-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-muted); }
+
+footer { border-top: 1px solid var(--rule); padding: 2.5rem 3rem; max-width: 1100px; margin: 0 auto; }
+.footer-text { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--ink-muted); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+  nav { padding: 0 1.5rem; } .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 8rem 1.5rem 4rem; } .hero-sidebar { display: none; }
+  .principles { padding: 0 1.5rem 3rem; } .principles-grid { grid-template-columns: 1fr; }
+  .case-index { grid-template-columns: 1fr; padding: 0 1.5rem 3rem; }
+  .section { padding: 3rem 1.5rem; } .case-divider { padding: 2rem 1.5rem 0; }
+  .section-header { grid-template-columns: 1fr; } .section-num { display: none; }
+  .block-grid { grid-template-columns: 1fr; }
+  .before-after { grid-template-columns: 1fr; }
+  .ba-panel.before { border-radius: 12px 12px 0 0; border-right: 1px solid var(--rule); border-bottom: none; }
+  .ba-panel.after  { border-radius: 0 0 12px 12px; border-left: 1px solid var(--rule); border-top: none; }
+  .ba-arrow { display: none; }
+  .medallion, .silver-types, .tri-grid, .stack-grid, .domains-grid { grid-template-columns: 1fr; }
+  .learnings-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-name">data-architect.portfolio</span>
+  <div class="nav-links">
+    <a href="#principles">Principles</a>
+    <a href="#caso1">Case 01</a>
+    <a href="#caso2">Case 02</a>
+    <a href="#adrs1">ADRs · Azure</a>
+    <a href="#adrs2">ADRs · Snowflake</a>
+    <a href="#aprendizajes1">Learnings</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">Data Architect · Azure · Snowflake · Data Products</div>
+    <h1>Decisions that<br><em>build</em> platforms</h1>
+    <p class="hero-desc">Two migrations. Two technology stacks. The same principle: design architectures the organization can operate today and scale tomorrow.</p>
+  </div>
+  <div class="hero-sidebar">
+    <div class="sidebar-block">
+      <div class="sidebar-label">Specialization</div>
+      <div class="sidebar-value">Cloud Data Architecture<br>Azure · Snowflake · Data Products</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Model</div>
+      <div class="sidebar-value">Centralized-Federated<br>Data Mesh principles</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Documented</div>
+      <div class="sidebar-value">2 full migrations<br>+ associated ADRs</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRINCIPLES -->
+<div class="principles" id="principles">
+  <div class="principles-heading">Design principles</div>
+  <div class="principles-grid">
+    <div class="principle-card">
+      <div class="principle-num">01</div>
+      <div class="principle-title">Architecture is a function of the organization, not the other way around</div>
+      <div class="principle-text">The best architecture is not the most advanced one — it's the one the company can actually operate. I design based on <strong>available tooling, business needs, growth trajectory, and — critically — team skill set</strong>. A platform the team can't own will fail regardless of how well it's designed on paper.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">02</div>
+      <div class="principle-title">Build for evolution, not for the final state</div>
+      <div class="principle-text">I design <strong>modular, decoupled architectures</strong> where components can be replaced, upgraded or retired with the least possible impact on the rest of the system. Tight coupling is the single largest barrier to change I've encountered in every migration. Decoupling is not a nice-to-have — it's a prerequisite for longevity.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">03</div>
+      <div class="principle-title">Stay current, choose deliberately</div>
+      <div class="principle-text">I follow architectural trends and tooling closely — not to adopt everything new, but to <strong>make informed trade-offs</strong>. Knowing what exists in the ecosystem is what separates a deliberate architectural decision from a default one. The goal is to pick the right tool for the actual context, not the most popular one.</div>
+    </div>
+  </div>
+</div>
+
+<!-- INDEX -->
+<div class="case-index">
+  <a class="index-card" href="#caso1">
+    <div class="index-num">01 · Azure</div>
+    <div class="index-title">From centralized sandbox to distributed platform with CAF + Delta Lake</div>
+    <div class="index-tag">ADLS · Synapse Serverless · ADF · Purview · Terraform · FinOps</div>
+  </a>
+  <a class="index-card" href="#caso2">
+    <div class="index-num">02 · Snowflake</div>
+    <div class="index-title">New data mesh architecture on Snowflake + dbt + Iceberg + Airflow</div>
+    <div class="index-tag">Snowflake · dbt · Apache Iceberg · Astronomer · Atlan · Fabric</div>
+  </a>
+</div>
+
+<!-- ══════════════════════════════════════════ CASE 01 ══ -->
+<div class="case-divider"><div class="divider-label">Case Study 01 · Azure</div></div>
+
+<section class="section" id="caso1">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div>
+      <div class="section-title">Centralized sandbox to<br>distributed platform with CAF</div>
+      <div class="section-sub">Azure · CAF Landing Zones · Delta Lake · Synapse Serverless · FinOps · Terraform</div>
+    </div>
+  </div>
+
+  <div class="case-hero">
+    <span class="case-tag">Azure · CAF Landing Zones · Delta Lake · Medallion Architecture · FinOps · IaC</span>
+    <div class="case-title">From centralized sandbox to a distributed<br>platform oriented around data products</div>
+    <div class="case-subtitle">Full redesign of an Azure platform adopting Microsoft's Cloud Adoption Framework, a centralized-federated model with Data Mesh principles, Delta Lake over ADLS Gen2, and Synapse Serverless. Designed to scale toward self-service without a redesign.</div>
+  </div>
+
+  <div class="block-grid">
+    <div class="case-block accent-l">
+      <div class="block-label">The problem</div>
+      <div class="block-text">The original platform was a <strong>centralized Azure sandbox</strong>: a single shared environment with costs impossible to attribute by domain. The critical structural issue was that <strong>the Silver and Gold layers were tightly coupled</strong> — any change to one broke the other, making migration to a new model extremely risky.</div>
+    </div>
+    <div class="case-block amber-l">
+      <div class="block-label">Model adopted</div>
+      <div class="model-badge"><div class="model-dot"></div>Centralized-Federated · Data Mesh principles</div>
+      <div class="block-text">Data Mesh was not adopted 100% — the organization lacked the maturity for fully distributed self-service. The data team builds all data products centrally, but the architecture is designed so domains can assume ownership without a redesign when ready. <strong>Self-service enabled in Gold from day 1.</strong></div>
+    </div>
+  </div>
+
+  <div class="before-after">
+    <div class="ba-panel before">
+      <div class="ba-label bl">Centralized sandbox</div>
+      <div class="ba-item"><span class="ba-dot red"></span>Single Azure environment, shared resources with no isolation</div>
+      <div class="ba-item"><span class="ba-dot red"></span>Costs impossible to attribute by domain</div>
+      <div class="ba-item"><span class="ba-dot red"></span>Silver and Gold coupled: changing one broke the other</div>
+      <div class="ba-item"><span class="ba-dot red"></span>SQL databases for everything: expensive, no lake benefits</div>
+      <div class="ba-item"><span class="ba-dot red"></span>No IaC: inconsistent environments</div>
+      <div class="ba-item"><span class="ba-dot red"></span>No cost visibility by domain or data product</div>
+    </div>
+    <div class="ba-arrow">→</div>
+    <div class="ba-panel after">
+      <div class="ba-label al">CAF + Delta Lake platform</div>
+      <div class="ba-item"><span class="ba-dot green"></span>Landing Zones per domain, costs isolated per subscription</div>
+      <div class="ba-item"><span class="ba-dot green"></span>Delta Lake over ADLS Gen2: schema evolution managed per source</div>
+      <div class="ba-item"><span class="ba-dot green"></span>Synapse Serverless: lake power without cluster management</div>
+      <div class="ba-item"><span class="ba-dot green"></span>Terraform + Terragrunt with tagging policies: standard, auditable IaC</div>
+      <div class="ba-item"><span class="ba-dot green"></span>FinOps: cost visibility, governance and optimization per domain</div>
+      <div class="ba-item"><span class="ba-dot green"></span>DevOps as active technical governance layer</div>
+    </div>
+  </div>
+
+  <div class="medallion-wrap">
+    <div class="block-label">Medallion architecture — Silver intentionally decoupled</div>
+    <div class="medallion">
+      <div class="med-layer bronze">
+        <span class="med-icon">🥉</span>
+        <div class="med-name">Bronze</div>
+        <div class="med-desc">Raw ingestion in Parquet + Delta. Standardized reusable framework for all domains. Schema evolution managed per source.</div>
+      </div>
+      <div class="med-layer silver">
+        <span class="med-icon">🥈</span>
+        <div class="med-name">Silver</div>
+        <div class="med-desc">Clean data in Delta format. Two variants decoupled from Gold: Silver Master (shared master data) and Silver Specific (per insight).</div>
+      </div>
+      <div class="med-layer gold">
+        <span class="med-icon">🥇</span>
+        <div class="med-name">Gold</div>
+        <div class="med-desc">Final data products in Parquet + Delta. Queried via Synapse Serverless. Entry point for domain self-service.</div>
+      </div>
+    </div>
+    <div class="silver-types">
+      <div class="silver-card">
+        <div class="silver-card-title">Silver Master (shared)</div>
+        <div class="silver-card-text">Master entities shared as the source for multiple Gold data products across domains. Changes require additional approval in DevOps due to downstream impact.</div>
+      </div>
+      <div class="silver-card">
+        <div class="silver-card-title">Silver Specific (per insight)</div>
+        <div class="silver-card-text">Built for a specific use case with no reuse obligation. Allows fast iteration on specific insights without impacting the shared layer.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block-grid">
+    <div class="case-block azure-l">
+      <div class="block-label">Delta Lake · Parquet · Schema evolution</div>
+      <div class="block-text">SQL databases were abandoned for data storage in favor of a <strong>Delta Lake over ADLS Gen2</strong>. <strong>Parquet and Delta files</strong> handle each source's schema evolution particularities without costly migration pipelines.<br><br>Delta format brings ACID transactions, time travel and change data feed. Each source manages its own schema evolution without impacting other domains.</div>
+    </div>
+    <div class="case-block accent-l">
+      <div class="block-label">Synapse Serverless · Performance without clusters</div>
+      <div class="block-text">Instead of keeping SQL clusters running, <strong>Synapse Serverless</strong> was adopted to query Parquet and Delta files directly from the lake. The project doesn't handle big data volumes that justify dedicated clusters, so Serverless delivers lake power <strong>at significantly lower cost without sacrificing performance</strong>.<br><br>SQL databases were reserved for cases with very low latency requirements or transactional application connectivity.</div>
+    </div>
+  </div>
+
+  <div class="case-block full amber-l">
+    <div class="block-label">FinOps · Cost visibility, governance and optimization</div>
+    <div class="block-text" style="margin-bottom:0.85rem;">Defined and managed the <strong>FinOps strategy for the data area</strong>, covering three pillars:</div>
+    <div class="tri-grid">
+      <div class="tri-card"><div class="tri-num">01</div><div class="tri-title">Visibility</div><div class="tri-text">Standardized tagging policies across all Azure resources aligned with the infrastructure team to attribute costs by domain, data product and environment.</div></div>
+      <div class="tri-card"><div class="tri-num">02</div><div class="tri-title">Governance</div><div class="tri-text">Budgets and alerts per Landing Zone. Tagging policies are mandatory and validated in the CI pipeline — a resource without tags doesn't deploy.</div></div>
+      <div class="tri-card"><div class="tri-num">03</div><div class="tri-title">Optimization</div><div class="tri-text">Migration from SQL databases to Synapse Serverless as the main cost reduction lever. Serverless pays per query, not per cluster uptime.</div></div>
+    </div>
+  </div>
+
+  <div class="block-grid">
+    <div class="case-block coral-l">
+      <div class="block-label">IaC · Terraform + Terragrunt</div>
+      <div class="block-text">Implemented <strong>infrastructure as code with Terraform and Terragrunt</strong>, aligned with the organization's infrastructure team. Terragrunt manages module reuse across Landing Zones — dev, staging and prod environments are configurations of the same module, not independent stacks.<br><br>Tagging policies are part of the infrastructure code: any resource missing required tags fails the Terraform plan before deploying.</div>
+    </div>
+    <div class="case-block coral-l">
+      <div class="block-label">DevOps · Governance as code</div>
+      <div class="block-text"><strong>Azure DevOps as active technical governance</strong>, not just CI/CD:<br><br>
+      · <strong>Naming convention validation</strong> of data objects before merge<br>
+      · <strong>Differentiated approval policies</strong> by impact (Silver Master changes require additional approval)<br>
+      · <strong>Quality gates</strong> in every environment transition (dev → staging → prod)<br>
+      · <strong>Mandatory tagging</strong> validated in pipeline before deployment</div>
+    </div>
+  </div>
+
+  <div class="case-block full amber-l">
+    <div class="block-label">Data products — introducing the concept to the team</div>
+    <div class="block-text" style="margin-bottom:0.75rem;">The biggest challenge wasn't technical: it was <strong>changing the team's mental model</strong> — from end-to-end projects per business requirement to reusable data products where <em>a data product can be the source of another data product</em>.</div>
+    <div class="dp-row">
+      <div class="dp-node source">Source DP · Bronze</div>
+      <div class="dp-arrow">→</div>
+      <div class="dp-node master">Master DP · Silver</div>
+      <div class="dp-arrow">→</div>
+      <div class="dp-node insight">Insight DP · Gold</div>
+      <div class="dp-arrow">→</div>
+      <div class="dp-node consumer">End consumer</div>
+    </div>
+    <div class="block-text" style="font-size:13px; margin-top:0.75rem;"><strong>Excel templates</strong> were designed to document each data product (name, domain, layer, sources, consumers, SLA, owner). The declared goal was migrating these to <strong>YAML files</strong> as the next step toward programmatic data contracts integrable in the CI/CD pipeline.</div>
+  </div>
+
+  <div class="block-grid">
+    <div class="case-block">
+      <div class="block-label">Data domains (3–5)</div>
+      <div class="domains-grid">
+        <div class="domain-card"><div class="domain-initial" style="background:var(--azure-light);color:var(--azure);">Cx</div><div class="domain-name">Customer</div><div class="domain-sub">pilot</div></div>
+        <div class="domain-card"><div class="domain-initial" style="background:var(--accent-light);color:var(--accent);">Op</div><div class="domain-name">Operations</div><div class="domain-sub">pilot</div></div>
+        <div class="domain-card"><div class="domain-initial" style="background:var(--amber-light);color:var(--amber);">Fi</div><div class="domain-name">Finance</div><div class="domain-sub">phase 2</div></div>
+        <div class="domain-card"><div class="domain-initial" style="background:var(--coral-light);color:var(--coral);">Pr</div><div class="domain-name">Product</div><div class="domain-sub">phase 2</div></div>
+      </div>
+    </div>
+    <div class="case-block">
+      <div class="block-label">Technology stack</div>
+      <div class="tech-group"><div class="tech-group-label">Azure</div><div class="tech-grid"><span class="tech-pill b">ADLS Gen2</span><span class="tech-pill b">Synapse Serverless</span><span class="tech-pill b">Azure Data Factory</span><span class="tech-pill b">Microsoft Purview</span><span class="tech-pill b">Azure DevOps</span></div></div>
+      <div class="tech-group"><div class="tech-group-label">Storage</div><div class="tech-grid"><span class="tech-pill g">Delta Lake</span><span class="tech-pill g">Parquet</span></div></div>
+      <div class="tech-group"><div class="tech-group-label">IaC + FinOps</div><div class="tech-grid"><span class="tech-pill a">Terraform</span><span class="tech-pill a">Terragrunt</span><span class="tech-pill a">FinOps</span><span class="tech-pill a">Tagging Policies</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ADRs Case 01 -->
+<section class="section" id="adrs1">
+  <div class="section-header">
+    <div class="section-num">—</div>
+    <div>
+      <div class="section-title">ADRs · Case 01</div>
+      <div class="section-sub">Architecture Decision Records · Azure platform</div>
+    </div>
+  </div>
+
+  <div class="adr-card">
+    <div class="adr-header"><div><div class="adr-id">ADR-001</div><div class="adr-title">Centralized-federated model instead of full Data Mesh</div></div><span class="adr-badge s-acc">Accepted</span></div>
+    <div class="adr-s"><div class="adr-s-label">Context</div><div class="adr-s-text">Data Mesh principles were the right north star, but the organization lacked the maturity for domains to take autonomous data ownership. Adopting fully distributed self-service would have produced a platform with no real adoption.</div></div>
+    <div class="adr-s"><div class="adr-s-label">Decision</div><div class="adr-s-text">The central data team builds all data products initially. The architecture is designed so domains can assume ownership without a redesign when ready. Self-service enabled in Gold from day 1, though not yet exploited. The architecture anticipates future maturity without demanding it now.</div></div>
+  </div>
+
+  <div class="adr-card" style="border-left-color:var(--azure);">
+    <div class="adr-header"><div><div class="adr-id">ADR-002</div><div class="adr-title">Delta Lake over ADLS Gen2 with Parquet as base format</div></div><span class="adr-badge s-acc">Accepted</span></div>
+    <div class="adr-s"><div class="adr-s-label">Context</div><div class="adr-s-text">Each source has its own schema evolution characteristics. Managing this with SQL databases required costly, fragile migration pipelines.</div></div>
+    <div class="adr-s"><div class="adr-s-label">Decision and trade-off</div><div class="adr-s-text">Parquet as base format for interoperability, Delta for layers requiring ACID transactions and time travel. Schema evolution delegated to source level — each domain manages its own evolution without impacting others. Accepted trade-off: higher complexity in compaction and vacuum operations compared to SQL.</div></div>
+  </div>
+
+  <div class="adr-card" style="border-left-color:var(--accent);">
+    <div class="adr-header"><div><div class="adr-id">ADR-003</div><div class="adr-title">Synapse Serverless instead of dedicated SQL clusters</div></div><span class="adr-badge s-acc">Accepted</span></div>
+    <div class="adr-s"><div class="adr-s-label">Alternatives</div><div class="adr-s-text"><strong>Dedicated SQL clusters:</strong> better consistent latency, but fixed cost regardless of usage. <strong>Databricks:</strong> more powerful for big data and ML, but oversized for current volumes and more expensive operationally.</div></div>
+    <div class="adr-s"><div class="adr-s-label">Decision</div><div class="adr-s-text">Synapse Serverless for the bulk of analytical queries — pay per query, no cluster management, no performance sacrifice for current volumes. Dedicated SQL reserved for specific low-latency requirements. Accepted trade-off: cold start latency on first queries of the day.</div></div>
+  </div>
+
+  <div class="adr-card" style="border-left-color:var(--coral);">
+    <div class="adr-header"><div><div class="adr-id">ADR-004</div><div class="adr-title">Terraform + Terragrunt as IaC standard with mandatory tagging</div></div><span class="adr-badge s-acc">Accepted</span></div>
+    <div class="adr-s"><div class="adr-s-label">Decision</div><div class="adr-s-text">Terraform aligned with the organization's infrastructure team. Terragrunt to manage module reuse across Landing Zones avoiding duplication. Tagging policies are part of the code — a resource without required tags fails the Terraform plan. This closes the FinOps loop: no tags, no deployment; no deployment, no unattributed resources.</div></div>
+  </div>
+
+  <div class="adr-card">
+    <div class="adr-header"><div><div class="adr-id">ADR-005</div><div class="adr-title">Decouple Silver from Gold — two variants with different purposes</div></div><span class="adr-badge s-acc">Accepted</span></div>
+    <div class="adr-s"><div class="adr-s-label">Context</div><div class="adr-s-text">In the sandbox, Silver and Gold were intertwined. The coupling was invisible until migration was attempted — then it became the primary barrier.</div></div>
+    <div class="adr-s"><div class="adr-s-label">Decision</div><div class="adr-s-text">Silver Master (shared master data, source for multiple Gold products, additional approval required for changes) and Silver Specific (per use case, no reuse obligation). Gold only consumes from Silver via explicit contracts, never directly from Bronze.</div></div>
+  </div>
+</section>
+
+<!-- Learnings Case 01 -->
+<section class="section" id="aprendizajes1">
+  <div class="section-header">
+    <div class="section-num">—</div>
+    <div>
+      <div class="section-title">Learnings · Case 01</div>
+      <div class="section-sub">Azure · CAF Landing Zones · Delta Lake · FinOps</div>
+    </div>
+  </div>
+  <div class="quote-block">
+    <div class="quote-label">The biggest challenge</div>
+    <div class="quote-text">"The hardest part wasn't designing the architecture — it was changing the team's mental model: shifting from delivering end-to-end projects per business requirement to building data products that other data products would consume."</div>
+  </div>
+  <div class="learnings-grid">
+    <div class="learning-item"><div class="learning-num">01</div><div><div class="learning-title">Concept before technology</div><div class="learning-text">Before configuring a single Landing Zone, I had to explain what a data product is and why it differs from a business pipeline. Without that shared understanding, any architectural decision was incomprehensible to the team.</div></div></div>
+    <div class="learning-item"><div class="learning-num">02</div><div><div class="learning-title">Coupling is invisible debt until it hurts</div><div class="learning-text">The coupling between Silver and Gold in the sandbox wasn't obvious until migration was attempted. Explicitly documenting layer dependencies from the initial design would have saved weeks of impact analysis.</div></div></div>
+    <div class="learning-item"><div class="learning-num">03</div><div><div class="learning-title">Adopt the real maturity level, not the ideal</div><div class="learning-text">Full Data Mesh was the right architecture on paper. Centralizing it in the data team was the right decision in practice. Good design isn't the most advanced — it's the one the organization can operate and evolve.</div></div></div>
+    <div class="learning-item"><div class="learning-num">04</div><div><div class="learning-title">FinOps is easier to design than to sustain</div><div class="learning-text">The FinOps strategy with tagging policies in IaC works well at initial deployment. The real challenge is maintaining discipline as the team grows. Policies must be technically impossible to bypass, not just documented.</div></div></div>
+    <div class="learning-item"><div class="learning-num">05</div><div><div class="learning-title">DevOps as governance is a cultural decision</div><div class="learning-text">Automatic naming validations generated initial resistance — the team saw them as friction. The shift was framing them as protection of the collective standard. Adoption came when the first error was caught automatically before reaching production.</div></div></div>
+    <div class="learning-item"><div class="learning-num">06</div><div><div class="learning-title">What I'd do differently: data contracts from day 1</div><div class="learning-text">Formal data contracts arrived late. Without defining what each data product promises (frequency, completeness, latency), consumer expectations diverge from producer commitments in ways only discovered in production.</div></div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ CASE 02 ══ -->
+<div class="case-divider"><div class="divider-label">Case Study 02 · Snowflake</div></div>
+
+<section class="section" id="caso2">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div>
+      <div class="section-title">New platform on<br>Snowflake + dbt + Iceberg</div>
+      <div class="section-sub">Snowflake · dbt · Apache Iceberg · Astronomer · Atlan · Microsoft Fabric · Terraform</div>
+    </div>
+  </div>
+
+  <div class="case-hero c2">
+    <span class="case-tag">Snowflake · dbt · Apache Iceberg · Astronomer · Atlan · Fabric · Terraform · DevOps</span>
+    <div class="case-title">Designing and implementing a new data mesh<br>architecture on a completely new stack</div>
+    <div class="case-subtitle">Without prior experience in the stack but with intensive self-study, a modern platform was designed and implemented capable of absorbing migrations from both the original sandbox and the Azure distributed platform, while maintaining future interoperability with Azure via Apache Iceberg.</div>
+  </div>
+
+  <div class="block-grid">
+    <div class="case-block accent-l">
+      <div class="block-label">The starting point</div>
+      <div class="block-text">Unlike the previous case, this project required <strong>designing and implementing on a completely new technology stack</strong> — Snowflake, dbt, Iceberg, Airflow — with no prior experience in any of these tools. The process required intensive learning in parallel with implementation.<br><br>The platform had to absorb two simultaneous migrations: solutions remaining in the <strong>original sandbox</strong> and solutions already built on the <strong>Azure distributed platform</strong>.</div>
+    </div>
+    <div class="case-block amber-l">
+      <div class="block-label">The same problems, new context</div>
+      <div class="block-text">Migrating to the new platform meant facing the same structural challenges: <strong>layer coupling</strong>, teams accustomed to end-to-end projects, and the need to re-explain the data products model in a different environment.<br><br>Added complexity: <strong>maintaining interoperability with Azure</strong> for Data Science use cases and ML models that would remain in the Azure ecosystem.</div>
+    </div>
+  </div>
+
+  <div class="case-block full snow-l">
+    <div class="block-label">Stack decisions — why each tool</div>
+    <div class="stack-grid">
+      <div class="stack-card"><div class="stack-tool">Snowflake</div><div class="stack-why">Main compute and storage engine. Roles and warehouses managed as independent data products — each domain has its own warehouse sized to its actual workload.</div><div class="stack-tradeoff">Trade-off: vendor lock-in partially mitigated with Iceberg for lake data.</div></div>
+      <div class="stack-card"><div class="stack-tool">dbt (Data Build Tool)</div><div class="stack-why">Transformation layer with versioning, quality tests and documentation as code. Automatically generates the lineage consumed by Atlan. Custom best practices defined and documented for the team.</div><div class="stack-tradeoff">Trade-off: learning curve for the team, but the return in maintainability justifies the investment.</div></div>
+      <div class="stack-card"><div class="stack-tool">Apache Iceberg</div><div class="stack-why">Snowflake doesn't natively support Delta files. Iceberg as an open table format maintains <strong>interoperability</strong> with Azure: data scientists can consume data from Azure without depending on Snowflake. Parquet is maintained with the same goal.</div><div class="stack-tradeoff">Trade-off: higher operational complexity than Delta, but vendor independence justifies the cost.</div></div>
+      <div class="stack-card"><div class="stack-tool">Astronomer (Airflow)</div><div class="stack-why">Managed Airflow via Astronomer to avoid direct Docker and Kubernetes management. Configured with a data mesh approach. Astronomer's AI capability generated the v1.0 of minimal DAGs to orchestrate Data Factory, dbt and Power BI.</div><div class="stack-tradeoff">Trade-off: Astronomer cost vs savings in infra operations — favorable for the current team size.</div></div>
+      <div class="stack-card"><div class="stack-tool">Atlan</div><div class="stack-why">Metadata and governance platform integrated with Snowflake and dbt. Provides automatic end-to-end lineage from dbt, data quality checks and an active data catalog. Replaces the role Purview played in Azure.</div><div class="stack-tradeoff">Trade-off: higher license cost than open source alternatives, offset by native dbt and Snowflake integration.</div></div>
+      <div class="stack-card"><div class="stack-tool">Microsoft Fabric (Power BI only)</div><div class="stack-why">Migrating from Analysis Services to Power BI semantic models required Fabric for licensing. Fabric was enabled <strong>exclusively for Power BI</strong>, without expanding its use to the rest of the data platform. Snowflake remains the central engine.</div><div class="stack-tradeoff">Deliberate decision to avoid platform fragmentation.</div></div>
+    </div>
+  </div>
+
+  <div class="block-grid">
+    <div class="case-block coral-l">
+      <div class="block-label">Terraform · Azure and Snowflake deployment</div>
+      <div class="block-text">Terraform maintained as IaC for two use cases:<br><br>
+      · <strong>Azure deployments</strong>: resources remaining in Azure (Data Factory, networking, storage) continue managed by Terraform.<br><br>
+      · <strong>Databases as data products in Snowflake</strong>: provisioning of databases, schemas, warehouses and roles managed through Azure DevOps pipelines with Terraform — treating Snowflake infrastructure with the same rigor as Azure.</div>
+    </div>
+    <div class="case-block coral-l">
+      <div class="block-label">DevOps · Governance as code across three platforms</div>
+      <div class="block-text">The governance model was extended to the new stack, covering three platforms:<br><br>
+      · <strong>Data Factory</strong>: pipeline naming and structure validation<br>
+      · <strong>Snowflake</strong>: object, role and convention validation before deployment<br>
+      · <strong>dbt</strong>: quality tests and documentation as a merge requirement — a model without tests doesn't pass the pipeline<br><br>
+      Governance as code applied consistently regardless of the underlying platform.</div>
+    </div>
+  </div>
+
+  <div class="case-block full">
+    <div class="block-label">Key architecture trade-offs</div>
+    <table class="tradeoff-table">
+      <thead>
+        <tr><th style="width:22%">Decision</th><th style="width:39%">What was gained</th><th style="width:39%">What was sacrificed</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Iceberg vs Delta</td><td><span class="gain-dot"></span>Interoperability with Azure for Data Science and ML</td><td><span class="cost-dot"></span>Higher operational complexity than Delta in the Azure ecosystem</td></tr>
+        <tr><td>Astronomer</td><td><span class="gain-dot"></span>Zero Docker/Kubernetes management for the data team</td><td><span class="cost-dot"></span>Additional license cost on top of open source Airflow</td></tr>
+        <tr><td>Fabric for Power BI only</td><td><span class="gain-dot"></span>Semantic models enabled without expanding Fabric dependency</td><td><span class="cost-dot"></span>Fabric license not fully utilized</td></tr>
+        <tr><td>Atlan vs OSS</td><td><span class="gain-dot"></span>Automatic lineage from dbt + integrated data quality out of the box</td><td><span class="cost-dot"></span>Higher license cost than DataHub or OpenMetadata</td></tr>
+        <tr><td>Warehouse per domain</td><td><span class="gain-dot"></span>Cost and performance isolation per domain at compute level</td><td><span class="cost-dot"></span>More warehouses to manage and optimize</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="case-block full">
+    <div class="block-label">Full technology stack</div>
+    <div class="tech-group"><div class="tech-group-label">Core engine</div><div class="tech-grid"><span class="tech-pill s">Snowflake</span><span class="tech-pill s">dbt</span><span class="tech-pill s">Apache Iceberg</span><span class="tech-pill">Parquet</span></div></div>
+    <div class="tech-group"><div class="tech-group-label">Orchestration</div><div class="tech-grid"><span class="tech-pill g">Astronomer</span><span class="tech-pill g">Apache Airflow</span><span class="tech-pill b">Azure Data Factory</span></div></div>
+    <div class="tech-group"><div class="tech-group-label">Governance + Metadata</div><div class="tech-grid"><span class="tech-pill a">Atlan</span><span class="tech-pill a">dbt docs</span><span class="tech-pill a">Auto lineage</span><span class="tech-pill a">Data Quality</span></div></div>
+    <div class="tech-group"><div class="tech-group-label">IaC + DevOps</div><div class="tech-grid"><span class="tech-pill">Terraform</span><span class="tech-pill b">Azure DevOps</span><span class="tech-pill">Governance as Code</span></div></div>
+    <div class="tech-group" style="margin-bottom:0"><div class="tech-group-label">Visualization</div><div class="tech-grid"><span class="tech-pill b">Microsoft Fabric</span><span class="tech-pill b">Power BI</span><span class="tech-pill">Semantic Models</span></div></div>
+  </div>
+</section>
+
+<!-- ADRs Case 02 -->
+<section class="section" id="adrs2">
+  <div class="section-header">
+    <div class="section-num">—</div>
+    <div>
+      <div class="section-title">ADRs · Case 02</div>
+      <div class="section-sub">Architecture Decision Records · Snowflake platform</div>
+    </div>
+  </div>
+
+  <div class="adr-card" style="border-left-color:var(--snow);">
+    <div class="adr-header"><div><div class="adr-id">ADR-006</div><div class="adr-title">Apache Iceberg as table format instead of Delta</div></div><span class="adr-badge s-acc">Accepted</span></div>
+    <div class="adr-s"><div class="adr-s-label">Context</div><div class="adr-s-text">Snowflake doesn't natively support Delta files. Data scientists and ML models would remain in Azure and needed to access lake data without depending on Snowflake.</div></div>
+    <div class="adr-s"><div class="adr-s-label">Alternatives</div><div class="adr-s-text"><strong>Pure Parquet:</strong> maximum interoperability but no ACID transactions or time travel. <strong>Snowflake proprietary formats:</strong> maximum integration but total lock-in — any future migration would require re-exporting everything.</div></div>
+    <div class="adr-s"><div class="adr-s-label">Decision</div><div class="adr-s-text">Iceberg as open table format for lake layers. Maintains interoperability with Azure (direct reading from Spark, Databricks or any compatible engine) without depending on Snowflake as intermediary. Parquet maintained as complement for read-only cases. Higher operational complexity of Iceberg is accepted.</div></div>
+  </div>
+
+  <div class="adr-card" style="border-left-color:var(--accent);">
+    <div class="adr-header"><div><div class="adr-id">ADR-007</div><div class="adr-title">Astronomer as managed Airflow platform</div></div><span class="adr-badge s-acc">Accepted</span></div>
+    <div class="adr-s"><div class="adr-s-label">Context</div><div class="adr-s-text">Self-managed Airflow requires maintaining Docker and Kubernetes. The data team doesn't have that operations profile, and the cost of dedicating time to orchestration infrastructure wasn't justified.</div></div>
+    <div class="adr-s"><div class="adr-s-label">Decision</div><div class="adr-s-text">Astronomer as managed platform. Eliminates Docker and Kubernetes management from the data team. Astronomer's AI capability was used to generate the v1.0 of minimal orchestration DAGs — Data Factory, dbt and Power BI — accelerating time to first production pipeline. DAGs versioned in DevOps with the same policies as the rest of the code.</div></div>
+  </div>
+
+  <div class="adr-card" style="border-left-color:var(--amber);">
+    <div class="adr-header"><div><div class="adr-id">ADR-008</div><div class="adr-title">Snowflake warehouses and roles as independent data products</div></div><span class="adr-badge s-acc">Accepted</span></div>
+    <div class="adr-s"><div class="adr-s-label">Context</div><div class="adr-s-text">A single shared warehouse for the entire organization mixes workloads and makes it impossible to attribute compute costs by domain.</div></div>
+    <div class="adr-s"><div class="adr-s-label">Decision</div><div class="adr-s-text">Each domain has its own warehouse sized to its actual workload. The role model follows least privilege: each data product has its own read/write roles, provisioned via Terraform through DevOps pipelines. Snowflake and dbt best practices formally documented for the team.</div></div>
+  </div>
+
+  <div class="adr-card" style="border-left-color:var(--coral);">
+    <div class="adr-header"><div><div class="adr-id">ADR-009</div><div class="adr-title">Microsoft Fabric enabled exclusively for Power BI</div></div><span class="adr-badge s-acc">Accepted</span></div>
+    <div class="adr-s"><div class="adr-s-label">Context</div><div class="adr-s-text">Migrating from Analysis Services to Power BI semantic models required Fabric for licensing. Fabric offers its own data platform capabilities that could duplicate Snowflake functionality.</div></div>
+    <div class="adr-s"><div class="adr-s-label">Decision</div><div class="adr-s-text">Fabric enabled exclusively for Power BI and semantic models. Not expanded as a data platform — Snowflake remains the central engine. This avoids platform fragmentation and keeps Snowflake as single source of truth for analytical data. Not fully utilizing the Fabric license is accepted.</div></div>
+  </div>
+
+  <div class="adr-card" style="border-left-color:var(--snow);">
+    <div class="adr-header"><div><div class="adr-id">ADR-010</div><div class="adr-title">Atlan as governance, lineage and data quality platform</div></div><span class="adr-badge s-open">Open for review</span></div>
+    <div class="adr-s"><div class="adr-s-label">Trade-off documented</div><div class="adr-s-text">Atlan integrates natively with Snowflake and dbt, automatically generating end-to-end lineage from dbt code without manual configuration. Alternatives (DataHub, OpenMetadata) require more integration and maintenance effort. Atlan chosen prioritizing time-to-value and dbt integration quality, with awareness of the higher license cost. Will be revisited when the number of active domains justifies reassessing ROI.</div></div>
+  </div>
+</section>
+
+<!-- Learnings Case 02 -->
+<section class="section" id="aprendizajes2">
+  <div class="section-header">
+    <div class="section-num">—</div>
+    <div>
+      <div class="section-title">Learnings · Case 02</div>
+      <div class="section-sub">Snowflake · dbt · Iceberg · Astronomer · Atlan · Fabric</div>
+    </div>
+  </div>
+  <div class="quote-block">
+    <div class="quote-label">The repeating lesson</div>
+    <div class="quote-text">"The problems in the second migration were the same as the first — invisible coupling, mental models to change, governance that arrives late. The technology stack changes; the organizational challenges don't."</div>
+  </div>
+  <div class="learnings-grid">
+    <div class="learning-item"><div class="learning-num">01</div><div><div class="learning-title">Learning the stack while implementing is viable</div><div class="learning-text">Intensive learning in parallel with implementation works if the conceptual design is clear from the start. Not knowing Snowflake or dbt didn't prevent making the right architectural decisions — trade-off reasoning transfers across technologies.</div></div></div>
+    <div class="learning-item"><div class="learning-num">02</div><div><div class="learning-title">Interoperability must be designed, not added later</div><div class="learning-text">Choosing Iceberg over Delta was an uncomfortable decision — it adds operational complexity. But designing Azure interoperability from the start for data scientists is far less costly than adding it when data is already in production.</div></div></div>
+    <div class="learning-item"><div class="learning-num">03</div><div><div class="learning-title">Governance as code scales; manual review doesn't</div><div class="learning-text">Applying the same DevOps governance model across three different platforms (Data Factory, Snowflake, dbt) proved that the pattern is technology-agnostic. What scales is the principle, not the specific configuration of each tool.</div></div></div>
+    <div class="learning-item"><div class="learning-num">04</div><div><div class="learning-title">Managing tool scope is an architectural decision</div><div class="learning-text">Enabling Fabric only for Power BI, when it offers full data platform capabilities, was a deliberate decision to avoid fragmentation. Explicitly defining what each tool does is as important as choosing the tools.</div></div></div>
+    <div class="learning-item"><div class="learning-num">05</div><div><div class="learning-title">Documented best practices are infrastructure</div><div class="learning-text">Formally defining Snowflake and dbt best practices for the team wasn't secondary documentation — it was a condition for the model to work. Without written standards, everyone interprets conventions differently and the data products model loses coherence.</div></div></div>
+    <div class="learning-item"><div class="learning-num">06</div><div><div class="learning-title">What I'd do differently: formalize SLAs before scaling</div><div class="learning-text">When migrating two platforms simultaneously, data contracts were deprioritized in favor of operational readiness. With more active domains, the absence of formal SLAs generates friction that's difficult to resolve without renegotiating agreements from scratch.</div></div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">© 2026 · Data Architect Portfolio · 2 case studies documented</div>
+</footer>
+
+</body>
+</html>
