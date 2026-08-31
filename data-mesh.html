@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Alejandro Camacho Segura">
+<meta name="description" content="Data Mesh & Data Products — Alejandro Camacho Segura. When Data Mesh works, when it fails, what a data product really is, and how self-service actually happens.">
+<meta property="og:title" content="Alejandro Camacho · Data Mesh & Data Products">
+<title>Alejandro Camacho · Data Mesh & Data Products</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:         #0f0e0c;
+  --ink-mid:     #3a3830;
+  --ink-muted:   #7a7870;
+  --ink-faint:   #c8c6be;
+  --paper:       #f7f5f0;
+  --paper-warm:  #efede6;
+  --paper-card:  #faf9f6;
+  --accent:      #1a5c42;
+  --accent-light:#d4ece2;
+  --amber:       #c47d0e;
+  --amber-light: #faecd0;
+  --azure:       #1a4a7a;
+  --azure-light: #ddeaf7;
+  --coral:       #b53d20;
+  --coral-light: #fce8e2;
+  --snow:        #4a2a8a;
+  --snow-light:  #ede8f8;
+  --rule:        rgba(15,14,12,0.1);
+  --rule-strong: rgba(15,14,12,0.2);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Geist', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(247,245,240,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+  padding: 0 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+}
+.nav-name { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 400; letter-spacing: 0.02em; color: var(--ink-mid); }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a { font-size: 12px; color: var(--ink-muted); text-decoration: none; font-family: 'Geist Mono', monospace; transition: color 0.2s; }
+.nav-links a:hover { color: var(--accent); }
+.nav-links a.active { color: var(--accent); }
+
+.hero {
+  padding: 10rem 3rem 5rem;
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 320px; gap: 4rem; align-items: end;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-eyebrow { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: clamp(38px, 5vw, 58px); font-weight: 300; line-height: 1.05; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero-desc { font-size: 15px; color: var(--ink-mid); line-height: 1.8; font-weight: 300; max-width: 480px; }
+.hero-sidebar { padding-bottom: 0.5rem; }
+.sidebar-block { border-top: 1px solid var(--rule-strong); padding: 1rem 0; }
+.sidebar-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.4rem; }
+.sidebar-value { font-size: 13px; font-weight: 400; color: var(--ink); line-height: 1.55; }
+
+.section { max-width: 1100px; margin: 0 auto; padding: 5rem 3rem; border-top: 1px solid var(--rule); }
+.section-header { display: grid; grid-template-columns: 80px 1fr; gap: 2rem; margin-bottom: 3rem; align-items: start; }
+.section-num { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-faint); padding-top: 6px; letter-spacing: 0.08em; }
+.section-title { font-family: 'Fraunces', serif; font-size: 34px; font-weight: 300; line-height: 1.1; letter-spacing: -0.02em; }
+.section-sub { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-muted); margin-top: 0.5rem; }
+
+.block-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+.block-grid.cols-1 { grid-template-columns: 1fr; }
+.block-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.case-block { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.6rem; }
+.case-block.full { grid-column: 1 / -1; }
+.accent-l { border-left: 3px solid var(--accent); }
+.amber-l  { border-left: 3px solid var(--amber); }
+.azure-l  { border-left: 3px solid var(--azure); }
+.coral-l  { border-left: 3px solid var(--coral); }
+.snow-l   { border-left: 3px solid var(--snow); }
+.block-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.65rem; }
+.block-text { font-size: 14px; line-height: 1.78; color: var(--ink-mid); font-weight: 300; }
+.block-text strong { font-weight: 500; color: var(--ink); }
+
+.quote-block { background: var(--ink); color: var(--paper); border-radius: 12px; padding: 2.25rem; margin-bottom: 1.25rem; }
+.quote-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(247,245,240,0.4); margin-bottom: 0.65rem; }
+.quote-text { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 300; line-height: 1.55; font-style: italic; }
+
+/* FAILURE REASONS */
+.failure-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border-radius: 12px; overflow: hidden; margin-bottom: 1.25rem; }
+.failure-card { background: var(--paper-card); padding: 1.5rem; border-top: 3px solid var(--coral); }
+.failure-num { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--coral); margin-bottom: 0.75rem; }
+.failure-title { font-size: 15px; font-weight: 500; margin-bottom: 0.6rem; line-height: 1.3; }
+.failure-text { font-size: 13px; color: var(--ink-mid); line-height: 1.7; font-weight: 300; }
+
+/* MATURITY SPECTRUM */
+.spectrum { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border-radius: 12px; overflow: hidden; margin-bottom: 1.25rem; }
+.spectrum-step { background: var(--paper-card); padding: 1.25rem; }
+.spectrum-step.active { background: var(--accent-light); }
+.spectrum-label { font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.4rem; }
+.spectrum-step.active .spectrum-label { color: var(--accent); }
+.spectrum-title { font-size: 13px; font-weight: 500; margin-bottom: 0.35rem; }
+.spectrum-desc { font-size: 12px; color: var(--ink-mid); line-height: 1.6; font-weight: 300; }
+
+/* DATA PRODUCT ANATOMY */
+.anatomy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border-radius: 12px; overflow: hidden; margin-bottom: 1.25rem; }
+.anatomy-card { background: var(--paper-card); padding: 1.25rem; }
+.anatomy-icon { font-size: 20px; margin-bottom: 0.5rem; display: block; }
+.anatomy-name { font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 500; margin-bottom: 0.35rem; }
+.anatomy-desc { font-size: 12px; color: var(--ink-mid); line-height: 1.6; font-weight: 300; }
+.anatomy-card.highlight { background: var(--accent-light); }
+.anatomy-card.highlight .anatomy-name { color: var(--accent); }
+
+/* DP DEPENDENCY DIAGRAM */
+.dp-flow { display: flex; flex-direction: column; gap: 0.5rem; margin: 0.75rem 0; }
+.dp-row { display: flex; gap: 0.5rem; align-items: center; }
+.dp-node { border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 11px; font-family: 'Geist Mono', monospace; flex: 1; text-align: center; line-height: 1.4; }
+.dp-node.source  { background: #f5ede4; color: #8b5a2b; border: 1px solid rgba(139,90,43,0.2); }
+.dp-node.silver  { background: var(--azure-light); color: var(--azure); border: 1px solid rgba(26,74,122,0.2); }
+.dp-node.silver-s{ background: var(--snow-light); color: var(--snow); border: 1px solid rgba(74,42,138,0.2); font-size:10px; }
+.dp-node.gold    { background: var(--accent-light); color: var(--accent); border: 1px solid rgba(26,92,66,0.2); }
+.dp-node.mart    { background: var(--amber-light); color: var(--amber); border: 1px solid rgba(196,125,14,0.2); }
+.dp-arrow { color: var(--ink-faint); font-size: 12px; flex-shrink: 0; }
+.dp-label { font-family: 'Geist Mono', monospace; font-size: 9px; color: var(--ink-muted); letter-spacing: 0.1em; text-transform: uppercase; margin: 0.25rem 0 0.1rem; }
+
+/* GRANULARITY TABLE */
+.gran-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 0.75rem; }
+.gran-table th { font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); font-weight: 400; padding: 0 1rem 0.65rem 0; text-align: left; border-bottom: 1px solid var(--rule-strong); }
+.gran-table td { padding: 0.65rem 1rem 0.65rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--ink-mid); line-height: 1.5; font-weight: 300; }
+.gran-table td:first-child { font-weight: 400; color: var(--ink); }
+.yes-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 5px; vertical-align: middle; }
+.no-dot  { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--coral); margin-right: 5px; vertical-align: middle; }
+
+/* SELF-SERVICE */
+.conditions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+.condition-card { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.5rem; }
+.condition-icon { font-size: 22px; margin-bottom: 0.65rem; display: block; }
+.condition-title { font-size: 14px; font-weight: 500; margin-bottom: 0.5rem; }
+.condition-text { font-size: 13px; color: var(--ink-mid); line-height: 1.7; font-weight: 300; }
+.condition-text strong { font-weight: 500; color: var(--ink); }
+
+/* LAYERS */
+.layers-visual { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border-radius: 12px; overflow: hidden; margin: 0.75rem 0; }
+.layer-row { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.25rem; background: var(--paper-card); }
+.layer-tag { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 500; width: 90px; flex-shrink: 0; }
+.layer-desc { font-size: 13px; color: var(--ink-mid); line-height: 1.5; font-weight: 300; flex: 1; }
+.layer-owner { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); width: 140px; text-align: right; flex-shrink: 0; }
+.layer-row.highlight { background: var(--amber-light); }
+.layer-row.highlight .layer-tag { color: var(--amber); }
+
+/* PILLS */
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.65rem; }
+.pill { font-family: 'Geist Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--rule-strong); color: var(--ink-mid); background: var(--paper-warm); }
+.pill.g { background: var(--accent-light); border-color: rgba(26,92,66,0.2); color: var(--accent); }
+.pill.b { background: var(--azure-light); border-color: rgba(26,74,122,0.2); color: var(--azure); }
+.pill.a { background: var(--amber-light); border-color: rgba(196,125,14,0.2); color: var(--amber); }
+.pill.s { background: var(--snow-light); border-color: rgba(74,42,138,0.2); color: var(--snow); }
+.pill.c { background: var(--coral-light); border-color: rgba(181,61,32,0.2); color: var(--coral); }
+
+/* APPROACH STEPS */
+.approach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border-radius: 8px; overflow: hidden; margin-top: 0.75rem; }
+.approach-step { background: var(--paper-warm); padding: 1.1rem; }
+.step-num { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-bottom: 0.35rem; }
+.step-title { font-size: 13px; font-weight: 500; margin-bottom: 0.3rem; }
+.step-text { font-size: 12px; color: var(--ink-mid); line-height: 1.6; font-weight: 300; }
+
+footer { border-top: 1px solid var(--rule); padding: 2.5rem 3rem; max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.footer-text { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--ink-muted); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+  nav { padding: 0 1.5rem; } .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 8rem 1.5rem 4rem; } .hero-sidebar { display: none; }
+  .section { padding: 3rem 1.5rem; }
+  .section-header { grid-template-columns: 1fr; } .section-num { display: none; }
+  .block-grid, .block-grid.cols-3, .failure-grid, .spectrum, .anatomy-grid, .conditions-grid, .approach-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!--
+  Data Mesh & Data Products — Conceptual Reference
+  Author: Alejandro Camacho Segura
+  LinkedIn: https://www.linkedin.com/in/alejandro-camacho-segura-026b2132/
+  © 2026
+-->
+
+<nav>
+  <span class="nav-name">Alejandro Camacho · Data Architect</span>
+  <div class="nav-links">
+    <a href="index.html">Portfolio</a>
+    <a href="data-modeling.html">Data Modeling</a>
+    <a href="data-mesh.html" class="active">Data Mesh</a>
+    <a href="governance.html">Governance</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">Conceptual reference · Data Mesh & Data Products</div>
+    <h1>Data Mesh is an<br><em>organizational</em> decision</h1>
+    <p class="hero-desc">Data Mesh is not an architecture pattern — it's a redefinition of how a company organizes around data. Most implementations fail not because of technology, but because that distinction is never made clear from the start.</p>
+  </div>
+  <div class="hero-sidebar">
+    <div class="sidebar-block">
+      <div class="sidebar-label">Topics</div>
+      <div class="sidebar-value">When Data Mesh fails<br>Data product anatomy<br>Self-service conditions</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Model applied</div>
+      <div class="sidebar-value">Centralized-Federated<br>not full Data Mesh</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Perspective</div>
+      <div class="sidebar-value">Practitioner-first<br>not academic</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 01 — WHAT IS DATA MESH -->
+<section class="section" id="mesh">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div>
+      <div class="section-title">What Data Mesh<br>actually is</div>
+      <div class="section-sub">And why treating it as a technology decision is the first mistake</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-label">The most common misconception</div>
+    <div class="quote-text">"Data Mesh is not a new architecture for your lake or warehouse. It's a redefinition of how the company operates around data — who owns it, who is responsible for its quality, and how teams collaborate across domain boundaries. If that organizational change doesn't happen, no amount of technology makes it work."</div>
+  </div>
+
+  <div class="block-grid">
+    <div class="case-block accent-l">
+      <div class="block-label">The four principles (Zhamak Dehghani)</div>
+      <div class="block-text">
+        <strong>Domain ownership</strong> — each business domain owns its data end-to-end, including quality and delivery.<br><br>
+        <strong>Data as a product</strong> — data is treated with the same product thinking as software: it has an owner, an SLA, and consumers.<br><br>
+        <strong>Self-serve data platform</strong> — a central platform provides the infrastructure so domains can operate autonomously without depending on a central data team.<br><br>
+        <strong>Federated computational governance</strong> — global standards (naming, contracts, security) enforced across all domains without centralizing decision-making.
+      </div>
+    </div>
+    <div class="case-block amber-l">
+      <div class="block-label">What it requires organizationally</div>
+      <div class="block-text">
+        <strong>Domain teams with data ownership</strong> — each domain needs people who understand both the business and the data. Without that, ownership is a label, not a reality.<br><br>
+        <strong>Management alignment</strong> — Data Mesh changes how teams are funded, measured and held accountable. Without executive buy-in, the model collapses under organizational inertia.<br><br>
+        <strong>A data platform team</strong> — someone still needs to build and maintain the shared infrastructure that makes domain autonomy possible. That team shifts from delivery to enablement.<br><br>
+        <strong>Time</strong> — this is a multi-year transformation, not a migration project.
+      </div>
+    </div>
+  </div>
+
+  <!-- MATURITY SPECTRUM -->
+  <div class="case-block full azure-l" style="margin-bottom:1.25rem;">
+    <div class="block-label">The maturity spectrum — where most organizations actually are</div>
+    <div class="block-text" style="margin-bottom:1rem;">Full Data Mesh is the right destination for organizations that have reached a certain level of data maturity. Most haven't. The honest move is to design toward Data Mesh while operating at the level the organization can actually sustain.</div>
+    <div class="spectrum">
+      <div class="spectrum-step">
+        <div class="spectrum-label">Level 1</div>
+        <div class="spectrum-title">Centralized</div>
+        <div class="spectrum-desc">Central data team owns and builds everything. All domains depend on it. Common starting point — unsustainable at scale.</div>
+      </div>
+      <div class="spectrum-step" style="background:var(--accent-light); border-top: 3px solid var(--accent);">
+        <div class="spectrum-label" style="color:var(--accent);">Level 2 · Current</div>
+        <div class="spectrum-title">Centralized-Federated</div>
+        <div class="spectrum-desc">Central team builds all data products but architecture is designed for domain ownership when maturity allows. Self-service enabled but not yet fully exploited.</div>
+        <div style="margin-top:0.75rem; font-family:'Geist Mono',monospace; font-size:10px; color:var(--accent); display:flex; align-items:center; gap:4px;">● Where we are now</div>
+      </div>
+      <div class="spectrum-step" style="background:var(--amber-light); border-top: 3px solid var(--amber);">
+        <div class="spectrum-label" style="color:var(--amber);">Level 3 · Target</div>
+        <div class="spectrum-title">Federated</div>
+        <div class="spectrum-desc">Domains own their data products. Central team provides platform and governance standards. Shared infrastructure, distributed ownership.</div>
+        <div style="margin-top:0.75rem; font-family:'Geist Mono',monospace; font-size:10px; color:var(--amber); display:flex; align-items:center; gap:4px;">◎ Where we're heading</div>
+      </div>
+      <div class="spectrum-step">
+        <div class="spectrum-label">Level 4</div>
+        <div class="spectrum-title">Full Data Mesh</div>
+        <div class="spectrum-desc">Full domain autonomy, federated governance, self-serve platform. Requires high organizational maturity across every domain.</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.75rem; padding:0.75rem 1rem; background:var(--paper-warm); border-radius:8px; border:1px solid var(--rule);">
+      <span style="font-family:'Geist Mono',monospace; font-size:10px; color:var(--accent);">● Level 2</span>
+      <div style="flex:1; height:2px; background: linear-gradient(to right, var(--accent), var(--amber)); border-radius:2px;"></div>
+      <span style="font-family:'Geist Mono',monospace; font-size:10px; color:var(--amber);">Level 3 ◎</span>
+      <span style="font-family:'Geist Mono',monospace; font-size:10px; color:var(--ink-muted); margin-left:0.5rem;">— current trajectory</span>
+    </div>
+    <div class="block-text" style="font-size:13px; margin-top:0.75rem;">The key insight: <strong>the architecture should be designed for Level 4 even if you're operating between Level 2 and Level 3</strong>. Decoupled layers, domain-oriented data products, and self-serve access in Gold cost nothing extra to build — and they're the difference between a platform that enables growth and one that needs to be rebuilt when the organization matures.</div>
+  </div>
+
+  <!-- WHEN IT FAILS -->
+  <div class="block-label" style="padding: 0 0 0.75rem;">When Data Mesh fails — the real reasons</div>
+  <div class="failure-grid">
+    <div class="failure-card">
+      <div class="failure-num">01 · Most common</div>
+      <div class="failure-title">Treated as a technology migration, not an organizational transformation</div>
+      <div class="failure-text">The decision to adopt Data Mesh is made by the data team and implemented as an architecture change. Business domains are never meaningfully involved. The technology changes; the operating model doesn't. Within months, the central data team is still doing everything — just with a more complex stack.</div>
+    </div>
+    <div class="failure-card">
+      <div class="failure-num">02</div>
+      <div class="failure-title">No management alignment — internally or with stakeholders</div>
+      <div class="failure-text">Without alignment between data managers and clear communication with domain stakeholders, Data Mesh produces ownership on paper and confusion in practice. Domains don't know what's expected of them. The data team doesn't know what to build for whom. Governance becomes a bottleneck instead of an enabler.</div>
+    </div>
+    <div class="failure-card">
+      <div class="failure-num">03</div>
+      <div class="failure-title">Organizational maturity mismatch</div>
+      <div class="failure-text">Adopting full Data Mesh before the organization has the people, processes and culture to support domain ownership sets the project up to fail. The right response is to design for Data Mesh but operate at the maturity level you actually have — and make that decision explicit, not by default.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 02 — DATA PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div>
+      <div class="section-title">What a data product<br>actually is</div>
+      <div class="section-sub">Beyond the definition — what makes it work in practice</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-label">The shift that matters</div>
+    <div class="quote-text">"A data product is not a dataset with an owner assigned to it. It's a reusable, trustworthy unit of data that solves a problem for a defined set of consumers — and that other data products can build on. The shift from 'we deliver requirements' to 'we build products' is the hardest and most important change in a Data Mesh adoption."</div>
+  </div>
+
+  <!-- ANATOMY -->
+  <div class="case-block full" style="margin-bottom:1.25rem;">
+    <div class="block-label">Anatomy of a data product</div>
+    <div class="anatomy-grid" style="margin-top:0.75rem;">
+      <div class="anatomy-card highlight">
+        <span class="anatomy-icon">👤</span>
+        <div class="anatomy-name">Owner</div>
+        <div class="anatomy-desc">A named person or team accountable for the product. Not a committee. Without a single owner, no one is truly responsible for quality or SLA adherence.</div>
+      </div>
+      <div class="anatomy-card highlight">
+        <span class="anatomy-icon">📋</span>
+        <div class="anatomy-name">Data contract</div>
+        <div class="anatomy-desc">Explicit agreement with consumers: schema, SLA (freshness, completeness, availability), and what changes require a versioning notice. The contract is what makes a dataset a product.</div>
+      </div>
+      <div class="anatomy-card highlight">
+        <span class="anatomy-icon">🔗</span>
+        <div class="anatomy-name">Defined consumers</div>
+        <div class="anatomy-desc">A data product with no known consumers is infrastructure, not a product. Knowing who depends on it is what drives quality decisions and prioritization.</div>
+      </div>
+      <div class="anatomy-card">
+        <span class="anatomy-icon">📐</span>
+        <div class="anatomy-name">Schema & semantics</div>
+        <div class="anatomy-desc">Standardized naming conventions and documented meaning for every field. A column called "status" that means different things in different products is a governance failure.</div>
+      </div>
+      <div class="anatomy-card">
+        <span class="anatomy-icon">🔍</span>
+        <div class="anatomy-name">Discoverability</div>
+        <div class="anatomy-desc">Registered in the data catalog (Atlan, Purview). A data product that consumers can't find doesn't get reused — which defeats the entire purpose.</div>
+      </div>
+      <div class="anatomy-card">
+        <span class="anatomy-icon">📦</span>
+        <div class="anatomy-name">Declared sources</div>
+        <div class="anatomy-desc">Explicit documentation of upstream dependencies — other data products or raw sources. This is what enables lineage and impact analysis when something changes upstream.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STANDARDIZATION -->
+  <div class="block-grid">
+    <div class="case-block coral-l">
+      <div class="block-label">Standardization is not optional</div>
+      <div class="block-text">Before building the first data product, <strong>naming conventions and a shared definition of "what is a data product"</strong> must exist — understood by the data team, by management, and by domain stakeholders.<br><br>Without standardization, every team interprets data products differently. Some build one per business question. Others build one for the entire domain. Neither is wrong by itself — but without a standard, you can't reason about reuse, ownership, or governance at scale.<br><br>We formalized this with <strong>Excel templates</strong> before moving to YAML data contracts — a pragmatic step that allowed non-technical stakeholders to participate in definition before the tooling was in place.</div>
+    </div>
+    <div class="case-block accent-l">
+      <div class="block-label">Reuse is the goal — not coverage</div>
+      <div class="block-text">The fundamental purpose of a data product is <strong>reusability</strong>. The question is not "does this data product exist?" but "is this data product being used as a building block by others?"<br><br>A Silver Master data product that feeds five Gold products is more valuable than five Silver products that each solve one specific requirement. The former is a platform asset. The latter is five pipelines with an owner label.<br><br>This shift — from solving requirements to building reusable assets — is the hardest cultural change in any Data Mesh adoption, and the one that takes the longest to internalize.</div>
+    </div>
+  </div>
+
+  <!-- DEPENDENCY DIAGRAM -->
+  <div class="case-block full azure-l" style="margin-bottom:1.25rem;">
+    <div class="block-label">Data product dependency chain — how products build on products</div>
+    <div class="block-text" style="margin-bottom:1rem;">One of the most important concepts to establish early: a data product can be the source of another data product. This is what enables reuse at scale — and what most teams fail to internalize when they first adopt the pattern.</div>
+    <div class="dp-flow">
+      <div class="dp-label">Source layer</div>
+      <div class="dp-row">
+        <div class="dp-node source">Source DP · Bronze<br><span style="font-size:9px; opacity:0.7;">raw ingestion · 1 per source</span></div>
+        <div class="dp-arrow">→</div>
+        <div class="dp-node silver">Silver Master DP<br><span style="font-size:9px; opacity:0.7;">shared · consumed by multiple Gold</span></div>
+        <div class="dp-arrow">→</div>
+        <div class="dp-node gold">Insight DP · Gold<br><span style="font-size:9px; opacity:0.7;">domain-specific · analytics-ready</span></div>
+        <div class="dp-arrow">→</div>
+        <div class="dp-node mart">Datamart schema<br><span style="font-size:9px; opacity:0.7;">Power BI · marketplace exposure</span></div>
+      </div>
+      <div class="dp-label" style="margin-top:0.5rem;">Specific path (no reuse obligation)</div>
+      <div class="dp-row">
+        <div class="dp-node source">Source DP · Bronze</div>
+        <div class="dp-arrow">→</div>
+        <div class="dp-node silver-s">Silver Specific<br><span style="font-size:9px; opacity:0.7;">feeds one Gold only</span></div>
+        <div class="dp-arrow">→</div>
+        <div class="dp-node gold">Insight DP · Gold</div>
+        <div class="dp-arrow">→</div>
+        <div class="dp-node mart">Datamart schema</div>
+      </div>
+    </div>
+    <div class="block-text" style="font-size:13px; margin-top:0.75rem;">The Datamart schema above Gold is a deliberate architectural decision — it separates <strong>analytical data products</strong> (Gold, internal platform consumption) from <strong>presentation data products</strong> (Datamart, Power BI reports and potential marketplace exposure). This boundary makes it explicit what is ready for end-user consumption and what is still platform infrastructure.</div>
+  </div>
+
+  <!-- GRANULARITY DECISION -->
+  <div class="case-block full amber-l" style="margin-bottom:1.25rem;">
+    <div class="block-label">The granularity question — when is a Silver its own data product?</div>
+    <div class="block-text" style="margin-bottom:1rem;">One of the hardest design decisions in practice: when does a Silver transformation deserve to be a standalone data product vs staying as an internal step inside another product? The answer depends on one question: <strong>is it reused?</strong></div>
+    <table class="gran-table">
+      <thead>
+        <tr>
+          <th style="width:35%">Situation</th>
+          <th style="width:32%">Decision</th>
+          <th style="width:33%">Rationale</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Silver feeds 2+ Gold data products</td>
+          <td><span class="yes-dot"></span>Standalone Silver Master DP</td>
+          <td>Reuse justifies the ownership and contract overhead. Changes to it have downstream impact that needs to be managed explicitly.</td>
+        </tr>
+        <tr>
+          <td>Silver feeds only one specific Gold</td>
+          <td><span class="no-dot"></span>Internal transformation, not a product</td>
+          <td>No reuse means no consumer beyond the parent product. The overhead of a contract and owner is not justified.</td>
+        </tr>
+        <tr>
+          <td>Silver might be reused in future</td>
+          <td><span class="yes-dot"></span>Design as a product, defer the contract</td>
+          <td>Build with product discipline (naming, schema, documentation) but don't formalize the contract until there's a second consumer. Avoids over-engineering while keeping the option open.</td>
+        </tr>
+        <tr>
+          <td>Silver is complex but domain-specific</td>
+          <td>Depends on organizational maturity</td>
+          <td>In early stages, keep it internal. As the platform matures and cross-domain consumption increases, promote it to a standalone product with a formal contract.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="block-text" style="font-size:13px; margin-top:0.75rem;">There is no universal answer — the right granularity evolves with the platform and the organization. What matters is having an <strong>explicit decision framework</strong> so the choice is made consciously, not by default.</div>
+  </div>
+</section>
+
+<!-- SECTION 03 — SELF-SERVICE -->
+<section class="section" id="selfservice">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div>
+      <div class="section-title">Self-service — what it<br>actually requires</div>
+      <div class="section-sub">Technology is the easy part. The hard part is organizational.</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-label">The common mistake</div>
+    <div class="quote-text">"Self-service doesn't happen because you expose a Gold layer. It happens when the organization has the knowledge, the processes, and the management support to use it — and when domain teams understand that building their own reports is their responsibility, not something they delegate to the data team."</div>
+  </div>
+
+  <!-- LAYER STRUCTURE -->
+  <div class="case-block full accent-l" style="margin-bottom:1.25rem;">
+    <div class="block-label">Layer structure designed for self-service</div>
+    <div class="block-text" style="margin-bottom:1rem;">Self-service requires a clear separation between what the data team owns and what domain teams consume. In our platform, that boundary sits between Gold and the Datamart schema:</div>
+    <div class="layers-visual">
+      <div class="layer-row">
+        <div class="layer-tag" style="color:var(--ink-muted);">Bronze</div>
+        <div class="layer-desc">Raw ingestion. Parquet → Delta / Iceberg. Internal platform layer — never exposed directly.</div>
+        <div class="layer-owner">Data team owns</div>
+      </div>
+      <div class="layer-row">
+        <div class="layer-tag" style="color:var(--azure);">Silver</div>
+        <div class="layer-desc">Clean, validated data. Master and Specific variants. Internal platform layer — consumed by Gold data products.</div>
+        <div class="layer-owner">Data team owns</div>
+      </div>
+      <div class="layer-row">
+        <div class="layer-tag" style="color:var(--accent);">Gold</div>
+        <div class="layer-desc">Analytical data products. Domain-oriented, analytics-ready. Self-service enabled — domains can query directly when maturity allows.</div>
+        <div class="layer-owner">Data team → domains</div>
+      </div>
+      <div class="layer-row highlight">
+        <div class="layer-tag">Datamart</div>
+        <div class="layer-desc">Presentation layer above Gold. Models ready for Power BI consumption or marketplace exposure. The explicit boundary for end-user self-service.</div>
+        <div class="layer-owner">Domains consume</div>
+      </div>
+    </div>
+    <div class="block-text" style="font-size:13px; margin-top:0.75rem;">The Datamart schema is not a technical necessity — it's a <strong>governance boundary</strong>. It makes explicit which models are production-ready for end-user consumption, separates platform concerns from presentation concerns, and creates a clean handoff point between the data team and domain consumers.</div>
+  </div>
+
+  <!-- CONDITIONS -->
+  <div class="block-label" style="margin-bottom:0.75rem;">What an organization actually needs for self-service to work</div>
+  <div class="conditions-grid">
+    <div class="condition-card">
+      <span class="condition-icon">🧠</span>
+      <div class="condition-title">Minimum data literacy in each domain</div>
+      <div class="condition-text">Each domain needs people who can read and work with data — at minimum a <strong>data analyst profile</strong> embedded in the team. Without this, self-service is not self-service — it's a support ticket to the data team with extra steps.</div>
+    </div>
+    <div class="condition-card">
+      <span class="condition-icon">🏛️</span>
+      <div class="condition-title">Management support and clear ownership</div>
+      <div class="condition-text">Domain managers need to understand that <strong>building their own reports is their team's responsibility</strong>, not a service the data team provides. Without management alignment at domain level, self-service doesn't get prioritized.</div>
+    </div>
+    <div class="condition-card">
+      <span class="condition-icon">📖</span>
+      <div class="condition-title">Documented, discoverable data products</div>
+      <div class="condition-text">If domain teams can't find what exists, understand what it contains, or trust its quality, they won't use it. <strong>Catalog, lineage and data quality</strong> are not governance overhead — they're prerequisites for self-service adoption.</div>
+    </div>
+    <div class="condition-card">
+      <span class="condition-icon">🤝</span>
+      <div class="condition-title">Defined responsibilities between data team and domains</div>
+      <div class="condition-text">The boundary must be explicit: the <strong>data team delivers certified, well-documented data products in the Datamart schema</strong>. Domain analysts build domain-specific reports from those products. Organizational reports can be built centrally and used as a base. The handoff point is the contract.</div>
+    </div>
+  </div>
+
+  <div class="case-block full coral-l">
+    <div class="block-label">The evolution path — from centralized to self-service</div>
+    <div class="block-text" style="margin-bottom:0.85rem;">Self-service is not a switch you flip — it's a gradual transfer of responsibility as domain maturity increases:</div>
+    <div class="approach-grid">
+      <div class="approach-step">
+        <div class="step-num">Phase 1 · Now</div>
+        <div class="step-title">Data team builds everything</div>
+        <div class="step-text">Data team builds all data products and organizational-level reports. Domains consume but don't produce. Architecture is already designed for future ownership transfer.</div>
+      </div>
+      <div class="approach-step">
+        <div class="step-num">Phase 2 · Next</div>
+        <div class="step-title">Domains build on top</div>
+        <div class="step-text">Domain analysts use certified Datamart products as a base to build domain-specific reports in Power BI. Data team focuses on platform and organizational products.</div>
+      </div>
+      <div class="approach-step">
+        <div class="step-num">Phase 3 · Future</div>
+        <div class="step-title">Domains own their products</div>
+        <div class="step-text">Mature domains assume ownership of their Gold data products. Data team shifts fully to platform enablement, governance and cross-domain products.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">© 2026 · Alejandro Camacho Segura · Data Architect</div>
+  <a href="https://www.linkedin.com/in/alejandro-camacho-segura-026b2132/" target="_blank" style="font-family:'Geist Mono',monospace; font-size:12px; color:var(--accent); text-decoration:none;">LinkedIn</a>
+</footer>
+
+</body>
+</html>

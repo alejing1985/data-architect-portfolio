@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Alejandro Camacho Segura">
+<meta name="description" content="Data Governance — Alejandro Camacho Segura. FAIR principles, governance as code, data contracts, and tooling decisions from a practitioner's perspective.">
+<meta property="og:title" content="Alejandro Camacho · Data Governance">
+<title>Alejandro Camacho · Data Governance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:         #0f0e0c;
+  --ink-mid:     #3a3830;
+  --ink-muted:   #7a7870;
+  --ink-faint:   #c8c6be;
+  --paper:       #f7f5f0;
+  --paper-warm:  #efede6;
+  --paper-card:  #faf9f6;
+  --accent:      #1a5c42;
+  --accent-light:#d4ece2;
+  --amber:       #c47d0e;
+  --amber-light: #faecd0;
+  --azure:       #1a4a7a;
+  --azure-light: #ddeaf7;
+  --coral:       #b53d20;
+  --coral-light: #fce8e2;
+  --snow:        #4a2a8a;
+  --snow-light:  #ede8f8;
+  --rule:        rgba(15,14,12,0.1);
+  --rule-strong: rgba(15,14,12,0.2);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Geist', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(247,245,240,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+  padding: 0 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+}
+.nav-name { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 400; letter-spacing: 0.02em; color: var(--ink-mid); }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a { font-size: 12px; color: var(--ink-muted); text-decoration: none; font-family: 'Geist Mono', monospace; transition: color 0.2s; }
+.nav-links a:hover { color: var(--accent); }
+.nav-links a.active { color: var(--accent); }
+
+.hero {
+  padding: 10rem 3rem 5rem;
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 320px; gap: 4rem; align-items: end;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-eyebrow { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: clamp(38px, 5vw, 58px); font-weight: 300; line-height: 1.05; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero-desc { font-size: 15px; color: var(--ink-mid); line-height: 1.8; font-weight: 300; max-width: 480px; }
+.hero-sidebar { padding-bottom: 0.5rem; }
+.sidebar-block { border-top: 1px solid var(--rule-strong); padding: 1rem 0; }
+.sidebar-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.4rem; }
+.sidebar-value { font-size: 13px; font-weight: 400; color: var(--ink); line-height: 1.55; }
+
+.section { max-width: 1100px; margin: 0 auto; padding: 5rem 3rem; border-top: 1px solid var(--rule); }
+.section-header { display: grid; grid-template-columns: 80px 1fr; gap: 2rem; margin-bottom: 3rem; align-items: start; }
+.section-num { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-faint); padding-top: 6px; letter-spacing: 0.08em; }
+.section-title { font-family: 'Fraunces', serif; font-size: 34px; font-weight: 300; line-height: 1.1; letter-spacing: -0.02em; }
+.section-sub { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-muted); margin-top: 0.5rem; }
+
+.block-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+.block-grid.cols-1 { grid-template-columns: 1fr; }
+.block-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.case-block { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.6rem; }
+.case-block.full { grid-column: 1 / -1; }
+.accent-l { border-left: 3px solid var(--accent); }
+.amber-l  { border-left: 3px solid var(--amber); }
+.azure-l  { border-left: 3px solid var(--azure); }
+.coral-l  { border-left: 3px solid var(--coral); }
+.snow-l   { border-left: 3px solid var(--snow); }
+.block-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.65rem; }
+.block-text { font-size: 14px; line-height: 1.78; color: var(--ink-mid); font-weight: 300; }
+.block-text strong { font-weight: 500; color: var(--ink); }
+
+.quote-block { background: var(--ink); color: var(--paper); border-radius: 12px; padding: 2.25rem; margin-bottom: 1.25rem; }
+.quote-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(247,245,240,0.4); margin-bottom: 0.65rem; }
+.quote-text { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 300; line-height: 1.55; font-style: italic; }
+
+/* FAIR GRID */
+.fair-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border-radius: 12px; overflow: hidden; margin-bottom: 1.25rem; }
+.fair-card { background: var(--paper-card); padding: 1.5rem; }
+.fair-card.hard { background: var(--amber-light); }
+.fair-letter { font-family: 'Fraunces', serif; font-size: 48px; font-weight: 300; line-height: 1; margin-bottom: 0.25rem; }
+.fair-card:nth-child(1) .fair-letter { color: var(--azure); }
+.fair-card:nth-child(2) .fair-letter { color: var(--accent); }
+.fair-card:nth-child(3) .fair-letter { color: var(--amber); }
+.fair-card:nth-child(4) .fair-letter { color: var(--snow); }
+.fair-name { font-size: 14px; font-weight: 500; margin-bottom: 0.5rem; }
+.fair-def  { font-size: 12px; color: var(--ink-mid); line-height: 1.65; font-weight: 300; margin-bottom: 0.75rem; }
+.fair-practice { font-size: 12px; color: var(--ink-mid); line-height: 1.6; font-weight: 300; padding-top: 0.65rem; border-top: 1px solid var(--rule); }
+.fair-practice strong { font-weight: 500; color: var(--ink); }
+.fair-hard-badge { display: inline-block; font-family: 'Geist Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 999px; background: var(--amber); color: white; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+
+/* GOVERNANCE LAYERS */
+.gov-layers { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border-radius: 12px; overflow: hidden; margin-bottom: 1.25rem; }
+.gov-layer { display: grid; grid-template-columns: 180px 1fr auto; gap: 1.5rem; align-items: start; padding: 1.25rem 1.5rem; background: var(--paper-card); }
+.gov-layer-name { font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 500; color: var(--ink); padding-top: 2px; }
+.gov-layer-desc { font-size: 13px; color: var(--ink-mid); line-height: 1.65; font-weight: 300; }
+.gov-layer-desc strong { font-weight: 500; color: var(--ink); }
+.gov-status { font-family: 'Geist Mono', monospace; font-size: 10px; padding: 3px 10px; border-radius: 999px; white-space: nowrap; align-self: start; }
+.status-done { background: var(--accent-light); color: var(--accent); }
+.status-partial { background: var(--amber-light); color: var(--amber); }
+.status-gap { background: var(--coral-light); color: var(--coral); }
+
+/* DATA CONTRACT */
+.contract-block { background: var(--paper-warm); border: 1px solid var(--rule); border-radius: 8px; padding: 1.25rem; font-family: 'Geist Mono', monospace; font-size: 12px; line-height: 1.9; color: var(--ink-mid); margin-top: 0.75rem; overflow-x: auto; }
+.contract-key   { color: var(--azure); }
+.contract-val   { color: var(--accent); }
+.contract-str   { color: var(--amber); }
+.contract-comment { color: var(--ink-faint); font-style: italic; }
+
+/* BEST PRACTICES */
+.bp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border-radius: 12px; overflow: hidden; margin-top: 0.75rem; }
+.bp-card { background: var(--paper-card); padding: 1.25rem; }
+.bp-num { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-bottom: 0.35rem; }
+.bp-title { font-size: 13px; font-weight: 500; margin-bottom: 0.35rem; }
+.bp-text { font-size: 12px; color: var(--ink-mid); line-height: 1.65; font-weight: 300; }
+.bp-text strong { font-weight: 500; color: var(--ink); }
+
+/* TOOL COMPARISON */
+.tool-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+.tool-card { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.6rem; }
+.tool-name { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 300; font-style: italic; margin-bottom: 0.25rem; }
+.tool-context { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-bottom: 1rem; }
+.tool-section { margin-bottom: 0.85rem; }
+.tool-section-label { font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.3rem; }
+.tool-section-text { font-size: 13px; color: var(--ink-mid); line-height: 1.65; font-weight: 300; }
+.tool-section-text strong { font-weight: 500; color: var(--ink); }
+.tool-item { font-size: 12px; color: var(--ink-mid); margin-bottom: 0.4rem; padding-left: 0.75rem; position: relative; line-height: 1.5; font-weight: 300; }
+.tool-item::before { content: '·'; position: absolute; left: 0; color: var(--ink-faint); }
+.tool-item.strength::before { content: '+'; color: var(--accent); font-weight: 500; }
+.tool-item.weakness::before { content: '–'; color: var(--coral); font-weight: 500; }
+
+/* APPROACH STEPS */
+.approach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border-radius: 8px; overflow: hidden; margin-top: 0.75rem; }
+.approach-step { background: var(--paper-warm); padding: 1.1rem; }
+.step-num { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-bottom: 0.35rem; }
+.step-title { font-size: 13px; font-weight: 500; margin-bottom: 0.3rem; }
+.step-text { font-size: 12px; color: var(--ink-mid); line-height: 1.6; font-weight: 300; }
+
+/* PILLS */
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.65rem; }
+.pill { font-family: 'Geist Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--rule-strong); color: var(--ink-mid); background: var(--paper-warm); }
+.pill.g { background: var(--accent-light); border-color: rgba(26,92,66,0.2); color: var(--accent); }
+.pill.b { background: var(--azure-light); border-color: rgba(26,74,122,0.2); color: var(--azure); }
+.pill.a { background: var(--amber-light); border-color: rgba(196,125,14,0.2); color: var(--amber); }
+.pill.s { background: var(--snow-light); border-color: rgba(74,42,138,0.2); color: var(--snow); }
+.pill.c { background: var(--coral-light); border-color: rgba(181,61,32,0.2); color: var(--coral); }
+
+footer { border-top: 1px solid var(--rule); padding: 2.5rem 3rem; max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.footer-text { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--ink-muted); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+  nav { padding: 0 1.5rem; } .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 8rem 1.5rem 4rem; } .hero-sidebar { display: none; }
+  .section { padding: 3rem 1.5rem; }
+  .section-header { grid-template-columns: 1fr; } .section-num { display: none; }
+  .block-grid, .block-grid.cols-3, .fair-grid, .bp-grid, .tool-compare, .approach-grid { grid-template-columns: 1fr; }
+  .gov-layer { grid-template-columns: 1fr; gap: 0.5rem; }
+  footer { flex-direction: column; gap: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!--
+  Data Governance — Conceptual Reference
+  Author: Alejandro Camacho Segura
+  LinkedIn: https://www.linkedin.com/in/alejandro-camacho-segura-026b2132/
+  © 2026
+-->
+
+<nav>
+  <span class="nav-name">Alejandro Camacho · Data Architect</span>
+  <div class="nav-links">
+    <a href="index.html">Portfolio</a>
+    <a href="data-modeling.html">Data Modeling</a>
+    <a href="data-mesh.html">Data Mesh</a>
+    <a href="governance.html" class="active">Governance</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">Conceptual reference · Data Governance</div>
+    <h1>Governance that<br>isn't enforced is<br><em>decorative</em></h1>
+    <p class="hero-desc">A governance framework documented in a wiki that nobody reads is not governance — it's aspiration. Real governance lives in the pipelines, the CI/CD gates, and the contracts between producers and consumers.</p>
+  </div>
+  <div class="hero-sidebar">
+    <div class="sidebar-block">
+      <div class="sidebar-label">Topics</div>
+      <div class="sidebar-value">FAIR principles<br>Governance as code<br>Data contracts · Tooling</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Tools used</div>
+      <div class="sidebar-value">Microsoft Purview · Atlan<br>Azure DevOps · dbt · Terraform</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Perspective</div>
+      <div class="sidebar-value">Practitioner-first<br>not academic</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 01 — FAIR PRINCIPLES -->
+<section class="section" id="fair">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div>
+      <div class="section-title">FAIR principles —<br>applied, not just cited</div>
+      <div class="section-sub">Findable · Accessible · Interoperable · Reusable</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-label">How I use FAIR</div>
+    <div class="quote-text">"I use FAIR both as a conceptual guide and as a practical checklist when designing data products. The question for each principle is not 'do we comply?' but 'what would break this?' — that's where the real governance decisions live."</div>
+  </div>
+
+  <div class="fair-grid">
+    <div class="fair-card">
+      <div class="fair-letter">F</div>
+      <div class="fair-name">Findable</div>
+      <div class="fair-def">Data and metadata must be registered and indexed so they can be discovered by both humans and machines — even if they can't access the data itself.</div>
+      <div class="fair-practice"><strong>In practice:</strong> every data product registered in the catalog (Atlan / Purview) with standardized metadata — name, domain, owner, description, tags. Naming conventions enforced by DevOps pipelines so search works consistently across all products.</div>
+    </div>
+
+    <div class="fair-card">
+      <div class="fair-letter">A</div>
+      <div class="fair-name">Accessible</div>
+      <div class="fair-def">Data should be retrievable by anyone with the appropriate authorization, using open and standardized protocols — even if the data itself is restricted.</div>
+      <div class="fair-practice"><strong>In practice:</strong> role-based access control in Snowflake provisioned via Terraform — least privilege by design. Each data product has its own read roles. Access is requested through a defined process, not granted ad hoc. Metadata remains accessible even when data is restricted.</div>
+    </div>
+
+    <div class="fair-card hard">
+      <div class="fair-hard-badge">Hardest to achieve</div>
+      <div class="fair-letter">I</div>
+      <div class="fair-name">Interoperable</div>
+      <div class="fair-def">Data should use shared vocabularies, formats and standards so it can be integrated with other data and systems without custom transformation for each case.</div>
+      <div class="fair-practice"><strong>In practice:</strong> this is the hardest principle because it depends on business alignment, not technology. A shared vocabulary requires that Marketing and Finance agree on what "active customer" means before any data product can claim to be interoperable. Open formats (Parquet, Iceberg) help at the technical layer — but shared semantics require organizational governance that no tool can enforce alone.</div>
+    </div>
+
+    <div class="fair-card">
+      <div class="fair-letter">R</div>
+      <div class="fair-name">Reusable</div>
+      <div class="fair-def">Data and metadata should be richly described so they can be replicated and combined across different contexts, with clear usage licenses and provenance.</div>
+      <div class="fair-practice"><strong>In practice:</strong> data product templates document provenance (sources, transformations applied, known limitations). dbt documentation generates lineage automatically. Silver Master data products are designed explicitly for reuse across multiple Gold products — reusability is a design criterion, not an afterthought.</div>
+    </div>
+  </div>
+
+  <div class="case-block full amber-l">
+    <div class="block-label">Why Interoperability is the hardest FAIR principle</div>
+    <div class="block-text">The technical layer of interoperability — open formats, standard APIs, common protocols — is solved. What's not solved is the <strong>shared vocabulary</strong>: the agreement between business domains on what entities mean, how they're measured, and how they relate to each other.<br><br>This is a governance and organizational problem, not a technology problem. You can build the most technically interoperable data platform in the world and still have four teams reporting four different "revenue" numbers because no one aligned on the definition. The semantic layer (dbt Semantic Layer, Atlan business glossary) helps — but it only works if the business participates in building it, which requires management alignment and dedicated effort that most organizations underestimate.</div>
+  </div>
+</section>
+
+<!-- SECTION 02 — GOVERNANCE AS CODE -->
+<section class="section" id="code">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div>
+      <div class="section-title">Governance as code —<br>enforcement over documentation</div>
+      <div class="section-sub">Standards that live in pipelines, not in wikis</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-label">The core principle</div>
+    <div class="quote-text">"A naming convention that lives in a Confluence page is a suggestion. A naming convention validated in a CI/CD gate before every merge is governance. The difference is enforcement — and enforcement only scales when it's automated."</div>
+  </div>
+
+  <div class="gov-layers">
+    <div class="gov-layer" style="background:var(--paper-warm);">
+      <div class="gov-layer-name" style="color:var(--ink-muted); font-size:11px;">Layer</div>
+      <div class="gov-layer-desc" style="color:var(--ink-muted); font-size:11px;">What it governs and how</div>
+      <div class="gov-status" style="color:var(--ink-muted); background:transparent;">Status</div>
+    </div>
+
+    <div class="gov-layer">
+      <div class="gov-layer-name">Naming conventions</div>
+      <div class="gov-layer-desc">Automated validation in Azure DevOps CI pipelines before any PR can merge. Applies to <strong>Data Factory pipelines, Snowflake objects (databases, schemas, tables) and dbt models</strong>. A non-compliant name fails the build — not a review comment, a build failure.</div>
+      <span class="gov-status status-done">Implemented</span>
+    </div>
+
+    <div class="gov-layer">
+      <div class="gov-layer-name">Approval policies</div>
+      <div class="gov-layer-desc">Differentiated approval rules by impact level in Azure DevOps. <strong>Silver Master changes require additional approval</strong> beyond the standard PR review, given their downstream impact on multiple data products. Changes to Bronze ingestion patterns require infrastructure team sign-off.</div>
+      <span class="gov-status status-done">Implemented</span>
+    </div>
+
+    <div class="gov-layer">
+      <div class="gov-layer-name">Infrastructure as code</div>
+      <div class="gov-layer-desc">Snowflake databases provisioned as data products via <strong>Terraform through Azure DevOps pipelines</strong>. Each domain and subdomain gets its own database with standardized naming, consistent RBAC roles, and the same permissions across dev, staging and prod — generated from the same Terraform module, not configured manually.</div>
+      <span class="gov-status status-done">Implemented</span>
+    </div>
+
+    <div class="gov-layer">
+      <div class="gov-layer-name">Tagging policies</div>
+      <div class="gov-layer-desc">Mandatory resource tags (domain, environment, data product) validated in the Terraform plan before any Azure resource deploys. Resources without required tags <strong>fail the deployment</strong> — the FinOps cost attribution loop is enforced at infrastructure level. Adoption across all teams and resources is still being consolidated.</div>
+      <span class="gov-status status-partial">In progress</span>
+    </div>
+
+    <div class="gov-layer">
+      <div class="gov-layer-name">dbt quality tests</div>
+      <div class="gov-layer-desc">dbt's native testing framework (not_null, unique, accepted_values, relationships) allows automated data quality checks to run as part of the transformation pipeline. A model with failing tests should not promote to production. This is a known gap in our current implementation — tests exist in isolated models but are not yet consistently enforced across all data products as a pipeline gate.</div>
+      <span class="gov-status status-gap">Known gap</span>
+    </div>
+
+    <div class="gov-layer">
+      <div class="gov-layer-name">Data contracts</div>
+      <div class="gov-layer-desc">Currently formalized as <strong>Excel templates</strong> documenting schema, SLA, owner, sources and consumers per data product. The target state is YAML-based contracts versioned in the same repository as the dbt models — enabling contract validation as part of the CI/CD pipeline and breaking change detection before deployment.</div>
+      <span class="gov-status status-partial">In progress</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 03 — DATA CONTRACTS -->
+<section class="section" id="contracts">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div>
+      <div class="section-title">Data contracts —<br>from Excel to YAML</div>
+      <div class="section-sub">Formalizing the agreement between producers and consumers</div>
+    </div>
+  </div>
+
+  <div class="block-grid">
+    <div class="case-block accent-l">
+      <div class="block-label">What a data contract is</div>
+      <div class="block-text">A data contract is an <strong>explicit, versioned agreement between a data product producer and its consumers</strong> that defines what the producer promises to deliver: schema, data quality levels, freshness SLA, availability, and how breaking changes will be communicated.<br><br>Without a contract, the producer and consumer have implicit assumptions that only surface as incidents. With a contract, breaking changes are caught before they reach production — and when they do reach production, everyone knows who is accountable.</div>
+    </div>
+    <div class="case-block amber-l">
+      <div class="block-label">Where we are — Excel templates</div>
+      <div class="block-text">We formalized data contracts as <strong>Excel templates</strong> to allow non-technical stakeholders to participate in definition before the tooling was ready. Each template documents:<br><br>
+      · <strong>Product name</strong> and domain / subdomain<br>
+      · <strong>Owner</strong> — named person, not a team<br>
+      · <strong>Schema</strong> — field names, types, descriptions<br>
+      · <strong>Sources</strong> — upstream dependencies<br>
+      · <strong>Consumers</strong> — who depends on this product<br>
+      · <strong>SLA</strong> — freshness, completeness, availability targets<br><br>
+      This was a pragmatic first step. The limitation: contracts in Excel are not versionable, not machine-readable, and not enforceable in a pipeline.</div>
+    </div>
+  </div>
+
+  <!-- YAML CONTRACT EXAMPLE -->
+  <div class="case-block full azure-l" style="margin-bottom:1.25rem;">
+    <div class="block-label">Target state — YAML data contract (best practices)</div>
+    <div class="block-text" style="margin-bottom:0.75rem;">A YAML data contract lives in the same repository as the dbt model it describes. It is versioned, diffable, and can be validated automatically in CI before a breaking change reaches production. A well-structured contract looks like this:</div>
+    <div class="contract-block">
+<span class="contract-comment"># data-contract: customer_master_silver</span><br>
+<span class="contract-key">version</span>: <span class="contract-val">2.1.0</span><br>
+<span class="contract-key">domain</span>: <span class="contract-str">customer</span><br>
+<span class="contract-key">layer</span>: <span class="contract-str">silver_master</span><br>
+<span class="contract-key">owner</span>: <span class="contract-str">data-platform-team</span><br>
+<br>
+<span class="contract-key">sla</span>:<br>
+&nbsp;&nbsp;<span class="contract-key">freshness</span>: <span class="contract-str">daily · max 6h delay</span><br>
+&nbsp;&nbsp;<span class="contract-key">completeness</span>: <span class="contract-str">&gt; 99.5% non-null on PK</span><br>
+&nbsp;&nbsp;<span class="contract-key">availability</span>: <span class="contract-str">99.9%</span><br>
+<br>
+<span class="contract-key">schema</span>:<br>
+&nbsp;&nbsp;- <span class="contract-key">name</span>: <span class="contract-str">customer_id</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="contract-key">type</span>: <span class="contract-str">VARCHAR</span> &nbsp;<span class="contract-comment"># business key · never null</span><br>
+&nbsp;&nbsp;- <span class="contract-key">name</span>: <span class="contract-str">status</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="contract-key">type</span>: <span class="contract-str">VARCHAR</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="contract-key">accepted_values</span>: [<span class="contract-str">active, inactive, pending</span>]<br>
+<br>
+<span class="contract-key">consumers</span>:<br>
+&nbsp;&nbsp;- <span class="contract-str">gold.customer_insights</span><br>
+&nbsp;&nbsp;- <span class="contract-str">gold.churn_analysis</span><br>
+<br>
+<span class="contract-key">breaking_change_policy</span>: <span class="contract-str">semver · 30-day deprecation notice</span>
+    </div>
+  </div>
+
+  <!-- BEST PRACTICES -->
+  <div class="case-block full coral-l">
+    <div class="block-label">Best practices for data contracts in YAML</div>
+    <div class="bp-grid">
+      <div class="bp-card">
+        <div class="bp-num">01</div>
+        <div class="bp-title">Use semantic versioning</div>
+        <div class="bp-text"><strong>Major version</strong> (2.0.0) for breaking changes — field removed, type changed, key renamed. <strong>Minor</strong> (2.1.0) for backwards-compatible additions — new field added. <strong>Patch</strong> (2.1.1) for fixes. Consumers subscribe to a major version, not a file path.</div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-num">02</div>
+        <div class="bp-title">Co-locate with the dbt model</div>
+        <div class="bp-text">The contract file lives in the same directory as the dbt model it describes. When a developer changes the model, the contract is right there — impossible to forget to update. A CI gate fails the PR if the contract version wasn't bumped on a schema change.</div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-num">03</div>
+        <div class="bp-title">Declare consumers explicitly</div>
+        <div class="bp-text">Every downstream data product that depends on this one is listed in the contract. This makes impact analysis automatic — before changing a Silver Master, the pipeline can check all declared consumers and flag the change. No more discovering breaking changes in production.</div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-num">04</div>
+        <div class="bp-title">Define SLAs as testable assertions</div>
+        <div class="bp-text">SLAs should be specific enough to be verified automatically. "Data is fresh" is not testable. "Max 6-hour delay from source timestamp to available in Silver, verified at 08:00 UTC daily" is testable — and can be wired to an alert if it fails.</div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-num">05</div>
+        <div class="bp-title">Separate physical schema from semantic contract</div>
+        <div class="bp-text">The contract documents <strong>what the field means</strong>, not just its type. A VARCHAR called "status" with accepted_values [active, inactive, pending] is a semantic contract. This is what connects FAIR's Interoperable principle to actual code — the shared vocabulary lives in the contract, not just in a glossary.</div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-num">06</div>
+        <div class="bp-title">Start with Silver Master products</div>
+        <div class="bp-text">Not all data products need a formal YAML contract immediately. Prioritize Silver Masters first — they have multiple consumers, so the cost of a breaking change is highest. Once the pattern is established, extend to Gold products and then Source products.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 04 — TOOLING -->
+<section class="section" id="tooling">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div>
+      <div class="section-title">Tooling — Purview vs Atlan</div>
+      <div class="section-sub">Two governance platforms, two different contexts</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-label">The decision frame</div>
+    <div class="quote-text">"Both Purview and Atlan are governance platforms. The right choice is not which one is better — it's which one fits your stack. If you live in the Microsoft ecosystem, Purview's native integrations are hard to beat. If your platform is multi-cloud or Snowflake-first, Atlan's cross-platform lineage and dbt integration make it the stronger choice."</div>
+  </div>
+
+  <div class="tool-compare">
+    <div class="tool-card azure-l">
+      <div class="tool-name">Microsoft Purview</div>
+      <div class="tool-context">Platform 01 · Azure-native stack</div>
+      <div class="tool-section">
+        <div class="tool-section-label">Strengths</div>
+        <div class="tool-item strength">Native integration with the entire Azure ecosystem — Synapse, ADF, ADLS, Azure SQL — lineage is automatic with zero configuration for Microsoft services.</div>
+        <div class="tool-item strength">Deep integration with Microsoft 365 and sensitivity labels — governance extends beyond data to documents and emails in the same console.</div>
+        <div class="tool-item strength">Policy enforcement at the storage level — can restrict access to ADLS containers directly from Purview, not just catalog metadata.</div>
+        <div class="tool-item strength">Strong choice when the entire stack is Microsoft — the integration depth is unmatched in that context.</div>
+      </div>
+      <div class="tool-section">
+        <div class="tool-section-label">Limitations</div>
+        <div class="tool-item weakness">When I started using it, it was early-stage — the product has evolved significantly since, but that initial experience shaped my perception.</div>
+        <div class="tool-item weakness">Outside the Microsoft ecosystem, integration effort increases substantially. Non-Azure sources require custom connectors or manual lineage.</div>
+        <div class="tool-item weakness">Less mature workflow and collaboration features compared to Atlan — business glossary and stewardship workflows are more limited.</div>
+      </div>
+    </div>
+
+    <div class="tool-card snow-l">
+      <div class="tool-name">Atlan</div>
+      <div class="tool-context">Platform 02 · Snowflake + dbt stack</div>
+      <div class="tool-section">
+        <div class="tool-section-label">Strengths</div>
+        <div class="tool-item strength">Native dbt integration — lineage is generated automatically from dbt metadata, column-level, without manual configuration. The lineage graph shows exactly how a Gold model traces back to source.</div>
+        <div class="tool-item strength">Deep Snowflake integration — query history, table statistics, and usage patterns surfaced directly in the catalog without additional instrumentation.</div>
+        <div class="tool-item strength">Richer collaboration and governance workflows — data stewardship, request access, certification workflows are more mature.</div>
+        <div class="tool-item strength">Cross-platform by design — works across cloud providers and tools without being tied to one vendor's ecosystem.</div>
+      </div>
+      <div class="tool-section">
+        <div class="tool-section-label">Limitations</div>
+        <div class="tool-item weakness">Higher license cost than alternatives — the ROI depends on the team actually using the catalog, which requires adoption effort.</div>
+        <div class="tool-item weakness">Data quality capabilities are not its strongest suit. In my experience, Purview was ahead in this area — not top-tier either, but more developed at the time of comparison. If data quality enforcement is the primary need, a dedicated tool may serve better than either platform.</div>
+        <div class="tool-item weakness">Outside of its supported connectors, integration effort is similar to any other catalog — the advantage disappears when the stack diverges from its core integrations.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-block full">
+    <div class="block-label">How to choose — a simple decision frame</div>
+    <div class="block-text" style="margin-bottom:1rem; font-size:13px; font-style:italic; color:var(--ink-muted);">This reflects my experience with both tools at a specific point in time. Both products evolve continuously. Any tooling decision should be grounded in current hands-on evaluation, not past experience or cost alone.</div>
+    <div class="block-grid cols-3" style="margin-top:0.75rem; margin-bottom:0;">
+      <div style="padding:0;">
+        <div class="block-label" style="color:var(--azure);">Choose Purview when</div>
+        <div class="block-text" style="font-size:13px;">Your entire stack is Microsoft — Azure, Synapse, ADF, Fabric. You need sensitivity label integration with M365. The automatic lineage across Microsoft services alone justifies the choice. Relatively stronger in data quality enforcement compared to pure governance catalog alternatives.</div>
+      </div>
+      <div style="padding:0; border-left:1px solid var(--rule); padding-left:1.25rem;">
+        <div class="block-label" style="color:var(--snow);">Choose Atlan when</div>
+        <div class="block-text" style="font-size:13px;">Your stack is Snowflake + dbt, multi-cloud, or you need rich cross-platform lineage. The dbt integration — automatic column-level lineage from model code — makes it the stronger choice for modern data platforms focused on governance and discoverability.</div>
+      </div>
+      <div style="padding:0; border-left:1px solid var(--rule); padding-left:1.25rem;">
+        <div class="block-label" style="color:var(--amber);">If data quality is the priority</div>
+        <div class="block-text" style="font-size:13px;">Neither Purview nor Atlan are primarily data quality tools. If DQ enforcement is the core requirement — not just cataloging — a dedicated data quality platform may serve better. The decision should be driven by <strong>current business needs and the company's data roadmap</strong>, not by tool names or license cost alone.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-block full" style="margin-top:1.25rem;">
+    <div class="block-label">Technology stack across both platforms</div>
+    <div class="pill-row">
+      <span class="pill b">Microsoft Purview</span>
+      <span class="pill s">Atlan</span>
+      <span class="pill b">Azure DevOps</span>
+      <span class="pill g">dbt lineage</span>
+      <span class="pill g">Terraform RBAC</span>
+      <span class="pill b">Snowflake roles</span>
+      <span class="pill a">Data contracts (YAML)</span>
+      <span class="pill c">dbt quality tests (planned)</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">© 2026 · Alejandro Camacho Segura · Data Architect</div>
+  <a href="https://www.linkedin.com/in/alejandro-camacho-segura-026b2132/" target="_blank" style="font-family:'Geist Mono',monospace; font-size:12px; color:var(--accent); text-decoration:none;">LinkedIn</a>
+</footer>
+
+</body>
+</html>

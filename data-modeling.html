@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Alejandro Camacho Segura">
+<meta name="description" content="Data Modeling — Alejandro Camacho Segura. Modeling levels, patterns, schema drift and evolution from a practitioner's perspective.">
+<meta property="og:title" content="Alejandro Camacho · Data Modeling">
+<title>Alejandro Camacho · Data Modeling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:        #0f0e0c;
+  --ink-mid:    #3a3830;
+  --ink-muted:  #7a7870;
+  --ink-faint:  #c8c6be;
+  --paper:      #f7f5f0;
+  --paper-warm: #efede6;
+  --paper-card: #faf9f6;
+  --accent:     #1a5c42;
+  --accent-light:#d4ece2;
+  --amber:      #c47d0e;
+  --amber-light:#faecd0;
+  --azure:      #1a4a7a;
+  --azure-light:#ddeaf7;
+  --coral:      #b53d20;
+  --coral-light:#fce8e2;
+  --snow:       #4a2a8a;
+  --snow-light: #ede8f8;
+  --rule:       rgba(15,14,12,0.1);
+  --rule-strong:rgba(15,14,12,0.2);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Geist', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(247,245,240,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+  padding: 0 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+}
+.nav-name { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 400; letter-spacing: 0.02em; color: var(--ink-mid); }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a { font-size: 12px; color: var(--ink-muted); text-decoration: none; font-family: 'Geist Mono', monospace; transition: color 0.2s; }
+.nav-links a:hover { color: var(--accent); }
+.nav-links a.active { color: var(--accent); }
+
+/* HERO */
+.hero {
+  padding: 10rem 3rem 5rem;
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 320px; gap: 4rem; align-items: end;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-eyebrow { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: clamp(38px, 5vw, 58px); font-weight: 300; line-height: 1.05; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero-desc { font-size: 15px; color: var(--ink-mid); line-height: 1.8; font-weight: 300; max-width: 480px; }
+.hero-sidebar { padding-bottom: 0.5rem; }
+.sidebar-block { border-top: 1px solid var(--rule-strong); padding: 1rem 0; }
+.sidebar-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.4rem; }
+.sidebar-value { font-size: 13px; font-weight: 400; color: var(--ink); line-height: 1.55; }
+
+/* SECTIONS */
+.section { max-width: 1100px; margin: 0 auto; padding: 5rem 3rem; border-top: 1px solid var(--rule); }
+.section-header { display: grid; grid-template-columns: 80px 1fr; gap: 2rem; margin-bottom: 3rem; align-items: start; }
+.section-num { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-faint); padding-top: 6px; letter-spacing: 0.08em; }
+.section-title { font-family: 'Fraunces', serif; font-size: 34px; font-weight: 300; line-height: 1.1; letter-spacing: -0.02em; }
+.section-sub { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-muted); margin-top: 0.5rem; }
+
+/* BLOCKS */
+.block-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+.block-grid.cols-1 { grid-template-columns: 1fr; }
+.block-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.case-block { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.6rem; }
+.case-block.full { grid-column: 1 / -1; }
+.accent-l { border-left: 3px solid var(--accent); }
+.amber-l  { border-left: 3px solid var(--amber); }
+.azure-l  { border-left: 3px solid var(--azure); }
+.coral-l  { border-left: 3px solid var(--coral); }
+.snow-l   { border-left: 3px solid var(--snow); }
+.block-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.65rem; }
+.block-text { font-size: 14px; line-height: 1.78; color: var(--ink-mid); font-weight: 300; }
+.block-text strong { font-weight: 500; color: var(--ink); }
+
+/* MODELING LEVELS */
+.levels-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border-radius: 12px; overflow: hidden; margin-bottom: 1.25rem; }
+.level-card { background: var(--paper-card); padding: 1.5rem; }
+.level-tag { font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.13em; text-transform: uppercase; margin-bottom: 0.5rem; }
+.level-name { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 300; font-style: italic; margin-bottom: 0.3rem; }
+.level-tagline { font-size: 12px; color: var(--ink-muted); margin-bottom: 1rem; font-weight: 300; }
+.level-divider { height: 1px; background: var(--rule); margin-bottom: 1rem; }
+.level-row { margin-bottom: 0.65rem; }
+.level-row-label { font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.2rem; }
+.level-row-value { font-size: 12px; color: var(--ink-mid); font-weight: 300; line-height: 1.5; }
+.level-row-value strong { font-weight: 500; color: var(--ink); }
+
+/* LEVEL COLORS */
+.level-card.conceptual .level-tag { color: var(--snow); }
+.level-card.logical   .level-tag { color: var(--azure); }
+.level-card.physical  .level-tag { color: var(--accent); }
+.level-card.semantic  .level-tag { color: var(--amber); }
+.level-card.conceptual { border-top: 3px solid var(--snow); }
+.level-card.logical   { border-top: 3px solid var(--azure); }
+.level-card.physical  { border-top: 3px solid var(--accent); }
+.level-card.semantic  { border-top: 3px solid var(--amber); }
+
+/* PATTERN CARDS */
+.patterns-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.25rem; }
+.pattern-card { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.6rem; }
+.pattern-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 300; font-style: italic; margin-bottom: 0.25rem; }
+.pattern-tag { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-bottom: 1rem; letter-spacing: 0.05em; }
+.pattern-section { margin-bottom: 0.85rem; }
+.pattern-label { font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.25rem; }
+.pattern-text { font-size: 13px; color: var(--ink-mid); line-height: 1.65; font-weight: 300; }
+.pattern-text strong { font-weight: 500; color: var(--ink); }
+.pattern-badge { display: inline-block; font-family: 'Geist Mono', monospace; font-size: 10px; padding: 3px 10px; border-radius: 999px; margin-top: 0.5rem; }
+.badge-used { background: var(--accent-light); color: var(--accent); }
+.badge-know { background: var(--paper-warm); color: var(--ink-muted); border: 1px solid var(--rule-strong); }
+
+/* DRIFT vs EVOLUTION */
+.drift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+.drift-card { background: var(--paper-card); border: 1px solid var(--rule); border-radius: 12px; padding: 1.6rem; }
+.drift-card.problem { border-top: 3px solid var(--coral); }
+.drift-card.solution { border-top: 3px solid var(--accent); }
+.drift-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 300; font-style: italic; margin-bottom: 0.25rem; }
+.drift-subtitle { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-bottom: 1rem; letter-spacing: 0.05em; }
+
+/* APPROACH STEPS */
+.approach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border-radius: 12px; overflow: hidden; margin-top: 0.75rem; }
+.approach-step { background: var(--paper-warm); padding: 1.1rem; }
+.step-num { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-bottom: 0.35rem; }
+.step-title { font-size: 13px; font-weight: 500; margin-bottom: 0.3rem; }
+.step-text { font-size: 12px; color: var(--ink-mid); line-height: 1.6; font-weight: 300; }
+
+/* TECH COMPARISON */
+.tech-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border-radius: 8px; overflow: hidden; margin-top: 0.75rem; }
+.tech-col { background: var(--paper-warm); padding: 1rem; }
+.tech-col-title { font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 500; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule); }
+.tech-item { font-size: 12px; color: var(--ink-mid); margin-bottom: 0.5rem; padding-left: 0.75rem; position: relative; line-height: 1.5; font-weight: 300; }
+.tech-item::before { content: '·'; position: absolute; left: 0; color: var(--ink-faint); }
+.tech-item strong { font-weight: 500; color: var(--ink); }
+.tech-item.limitation { color: var(--ink-muted); font-style: italic; }
+.tech-item.limitation::before { content: '!'; color: var(--coral); font-style: normal; }
+
+/* QUOTE */
+.quote-block { background: var(--ink); color: var(--paper); border-radius: 12px; padding: 2.25rem; margin-bottom: 1.25rem; }
+.quote-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(247,245,240,0.4); margin-bottom: 0.65rem; }
+.quote-text { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 300; line-height: 1.55; font-style: italic; }
+
+/* PILLS */
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.65rem; }
+.pill { font-family: 'Geist Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--rule-strong); color: var(--ink-mid); background: var(--paper-warm); }
+.pill.g { background: var(--accent-light); border-color: rgba(26,92,66,0.2); color: var(--accent); }
+.pill.b { background: var(--azure-light); border-color: rgba(26,74,122,0.2); color: var(--azure); }
+.pill.a { background: var(--amber-light); border-color: rgba(196,125,14,0.2); color: var(--amber); }
+.pill.s { background: var(--snow-light); border-color: rgba(74,42,138,0.2); color: var(--snow); }
+
+footer { border-top: 1px solid var(--rule); padding: 2.5rem 3rem; max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.footer-text { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--ink-muted); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+  nav { padding: 0 1.5rem; } .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 8rem 1.5rem 4rem; } .hero-sidebar { display: none; }
+  .section { padding: 3rem 1.5rem; }
+  .section-header { grid-template-columns: 1fr; } .section-num { display: none; }
+  .levels-grid, .patterns-grid, .block-grid, .block-grid.cols-3, .drift-grid, .approach-grid, .tech-compare { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!--
+  Data Modeling — Conceptual Reference
+  Author: Alejandro Camacho Segura
+  LinkedIn: https://www.linkedin.com/in/alejandro-camacho-segura-026b2132/
+  © 2026
+-->
+
+<nav>
+  <span class="nav-name">Alejandro Camacho · Data Architect</span>
+  <div class="nav-links">
+    <a href="index.html">Portfolio</a>
+    <a href="data-modeling.html" class="active">Data Modeling</a>
+    <a href="data-mesh.html">Data Mesh</a>
+    <a href="governance.html">Governance</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">Conceptual reference · Data Modeling</div>
+    <h1>Modeling data<br>with <em>purpose</em></h1>
+    <p class="hero-desc">Data modeling is not a phase you complete before building — it's a continuous design decision that determines how well your platform ages. This page documents my perspective on modeling levels, patterns, and schema change.</p>
+  </div>
+  <div class="hero-sidebar">
+    <div class="sidebar-block">
+      <div class="sidebar-label">Topics</div>
+      <div class="sidebar-value">Modeling levels<br>Patterns · Schema drift & evolution</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Perspective</div>
+      <div class="sidebar-value">Practitioner-first<br>not academic</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Stack context</div>
+      <div class="sidebar-value">Snowflake · dbt · Iceberg<br>Azure · Delta Lake</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODELING LEVELS -->
+<section class="section" id="levels">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div>
+      <div class="section-title">The four levels<br>of data modeling</div>
+      <div class="section-sub">From most abstract to most concrete — semantic sits orthogonal to the other three</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-label">Why this matters in practice</div>
+    <div class="quote-text">"Most data quality problems I've seen aren't technical — they're modeling problems that were never surfaced at the right level. A disagreement between Marketing and Finance on what 'active customer' means is a semantic modeling problem, not a pipeline bug."</div>
+  </div>
+
+  <div class="levels-grid">
+    <div class="level-card conceptual">
+      <div class="level-tag">Conceptual</div>
+      <div class="level-name">What exists</div>
+      <div class="level-tagline">Language of the business · no technology</div>
+      <div class="level-divider"></div>
+      <div class="level-row">
+        <div class="level-row-label">Question it answers</div>
+        <div class="level-row-value">What entities exist and how do they relate?</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Example</div>
+        <div class="level-row-value">A <strong>Customer</strong> places <strong>Orders</strong>. An <strong>Order</strong> contains <strong>Products</strong>.</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Artefact</div>
+        <div class="level-row-value">Entity-relationship sketch · business glossary</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Who needs it</div>
+        <div class="level-row-value">Business stakeholders, domain owners, architects</div>
+      </div>
+    </div>
+
+    <div class="level-card logical">
+      <div class="level-tag">Logical</div>
+      <div class="level-name">How it's structured</div>
+      <div class="level-tagline">Technology-agnostic · attributes and rules</div>
+      <div class="level-divider"></div>
+      <div class="level-row">
+        <div class="level-row-label">Question it answers</div>
+        <div class="level-row-value">What attributes does each entity have and what are the constraints?</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Example</div>
+        <div class="level-row-value">Customer (id, name, email, status). Order (id, date, customer_id FK, total).</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Artefact</div>
+        <div class="level-row-value">Normalized ERD · data dictionary</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Who needs it</div>
+        <div class="level-row-value">Data architects, data engineers, analysts</div>
+      </div>
+    </div>
+
+    <div class="level-card physical">
+      <div class="level-tag">Physical</div>
+      <div class="level-name">How it's stored</div>
+      <div class="level-tagline">Engine-specific · performance and cost</div>
+      <div class="level-divider"></div>
+      <div class="level-row">
+        <div class="level-row-label">Question it answers</div>
+        <div class="level-row-value">How do we store this in the actual engine — partitioning, clustering, file format?</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Example</div>
+        <div class="level-row-value">Snowflake table clustered by order_date · partitioned Iceberg table on event_month.</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Artefact</div>
+        <div class="level-row-value">DDL scripts · dbt models · IaC definitions</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Who needs it</div>
+        <div class="level-row-value">Data engineers, platform architects</div>
+      </div>
+    </div>
+
+    <div class="level-card semantic">
+      <div class="level-tag">Semantic</div>
+      <div class="level-name">What it means</div>
+      <div class="level-tagline">Sits orthogonal · shared meaning across consumers</div>
+      <div class="level-divider"></div>
+      <div class="level-row">
+        <div class="level-row-label">Question it answers</div>
+        <div class="level-row-value">What does "active customer" mean — and does it mean the same thing in Marketing and Finance?</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Example</div>
+        <div class="level-row-value">Business glossary in Atlan · metric definitions in dbt Semantic Layer · ontologies.</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Artefact</div>
+        <div class="level-row-value">Glossary · taxonomy · dbt semantic layer · Atlan business terms</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-label">Who needs it</div>
+        <div class="level-row-value">All consumers — it's governance infrastructure</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-block full accent-l">
+    <div class="block-label">Why semantic sits orthogonal</div>
+    <div class="block-text">Unlike the other three levels which form a progression from abstract to concrete, <strong>semantic modeling cuts across all of them</strong>. You can have a perfect physical model and still have different teams reporting different revenue numbers because no one agreed on what "closed deal" means. Semantic modeling is the layer that prevents that — and it's the one most teams skip until the pain is already visible in dashboards.</div>
+  </div>
+</section>
+
+<!-- PATTERNS -->
+<section class="section" id="patterns">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div>
+      <div class="section-title">Modeling patterns —<br>when to use which</div>
+      <div class="section-sub">Star Schema · Data Vault · One Big Table</div>
+    </div>
+  </div>
+
+  <div class="case-block full amber-l" style="margin-bottom:1.25rem;">
+    <div class="block-label">My honest take</div>
+    <div class="block-text">In my projects I've worked primarily with <strong>Star Schema</strong> because the use cases were reporting-driven and the organizational maturity didn't require anything more complex. That's not a limitation — it's the right call for most analytics platforms that aren't at hyperscale or in heavily regulated industries. Choosing a pattern more complex than what you need is just another form of over-engineering.</div>
+  </div>
+
+  <div class="patterns-grid">
+    <div class="pattern-card">
+      <div class="pattern-name">Star Schema</div>
+      <div class="pattern-tag">Kimball · dimensional modeling</div>
+      <div class="pattern-section">
+        <div class="pattern-label">Best for</div>
+        <div class="pattern-text">Analytical reporting, BI tools, use cases where <strong>query performance and simplicity matter most</strong>. The structure is intuitive — business users can understand it.</div>
+      </div>
+      <div class="pattern-section">
+        <div class="pattern-label">Core idea</div>
+        <div class="pattern-text">A central <strong>fact table</strong> (measurable events) surrounded by <strong>dimension tables</strong> (context — who, what, when, where). Denormalized for read performance.</div>
+      </div>
+      <div class="pattern-section">
+        <div class="pattern-label">Trade-off</div>
+        <div class="pattern-text">Less flexible for late-arriving changes. If a business rule changes retroactively, you may need to reprocess history. Not designed for full auditability of every change.</div>
+      </div>
+      <div class="pattern-section">
+        <div class="pattern-label">In my experience</div>
+        <div class="pattern-text">Used it in both platform migrations. Worked well for Gold layer data products oriented toward BI consumption in Power BI.</div>
+      </div>
+      <span class="pattern-badge badge-used">Used in production</span>
+    </div>
+
+    <div class="pattern-card">
+      <div class="pattern-name">Data Vault 2.0</div>
+      <div class="pattern-tag">Hub · Satellite · Link</div>
+      <div class="pattern-section">
+        <div class="pattern-label">Best for</div>
+        <div class="pattern-text">Environments with <strong>strict auditability requirements</strong> — banking, insurance, regulated industries — where you need to trace every change to every record over time.</div>
+      </div>
+      <div class="pattern-section">
+        <div class="pattern-label">Core idea</div>
+        <div class="pattern-text"><strong>Hubs</strong> (business keys), <strong>Links</strong> (relationships between hubs), <strong>Satellites</strong> (descriptive attributes with full history). Everything is insert-only — nothing is ever overwritten.</div>
+      </div>
+      <div class="pattern-section">
+        <div class="pattern-label">Trade-off</div>
+        <div class="pattern-text">High complexity. More tables, more joins, steeper learning curve for the team. Query performance requires careful design of the information marts on top.</div>
+      </div>
+      <div class="pattern-section">
+        <div class="pattern-label">When I'd choose it</div>
+        <div class="pattern-text">If the platform serves a regulated industry where full lineage and auditability of every data change is a non-negotiable requirement, not just a nice-to-have.</div>
+      </div>
+      <span class="pattern-badge badge-know">Architectural knowledge</span>
+    </div>
+
+    <div class="pattern-card">
+      <div class="pattern-name">One Big Table</div>
+      <div class="pattern-tag">OBT · wide table · denormalized</div>
+      <div class="pattern-section">
+        <div class="pattern-label">Best for</div>
+        <div class="pattern-text">High-volume analytical workloads where <strong>join cost is the bottleneck</strong> and query simplicity for end users matters — common in modern cloud data warehouses at scale.</div>
+      </div>
+      <div class="pattern-section">
+        <div class="pattern-label">Core idea</div>
+        <div class="pattern-text">Pre-join everything into a single wide table. Pay the cost once at ingestion, not at every query. Columnar engines like Snowflake or BigQuery handle wide tables efficiently.</div>
+      </div>
+      <div class="pattern-section">
+        <div class="pattern-label">Trade-off</div>
+        <div class="pattern-text">Data duplication. Harder to maintain when source schemas change. Can become unwieldy as the number of dimensions grows. Not suitable for normalized update patterns.</div>
+      </div>
+      <div class="pattern-section">
+        <div class="pattern-label">When I'd choose it</div>
+        <div class="pattern-text">For specific Gold layer data products where the consumer is a data scientist or ML pipeline that needs everything pre-joined and query simplicity beats storage efficiency.</div>
+      </div>
+      <span class="pattern-badge badge-know">Architectural knowledge</span>
+    </div>
+  </div>
+
+  <div class="case-block full">
+    <div class="block-label">How to choose — a simple decision frame</div>
+    <div class="block-grid cols-3" style="margin-top:0.75rem; margin-bottom:0;">
+      <div style="padding:0;">
+        <div class="block-label" style="color:var(--snow);">Use Star Schema when</div>
+        <div class="block-text" style="font-size:13px;">The primary use case is BI reporting · the team is not data engineering-heavy · query performance for business users is the priority · organizational maturity is moderate</div>
+      </div>
+      <div style="padding:0; border-left:1px solid var(--rule); padding-left:1.25rem;">
+        <div class="block-label" style="color:var(--azure);">Use Data Vault when</div>
+        <div class="block-text" style="font-size:13px;">You're in a regulated industry (banking, insurance, pharma) · full auditability of every change is a compliance requirement · the data team is mature enough to operate it</div>
+      </div>
+      <div style="padding:0; border-left:1px solid var(--rule); padding-left:1.25rem;">
+        <div class="block-label" style="color:var(--accent);">Use OBT when</div>
+        <div class="block-text" style="font-size:13px;">You're building for ML/data science consumers · the volume justifies pre-joining · you're using a columnar engine that handles wide tables well · join cost is measurably the bottleneck</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEMA DRIFT & EVOLUTION -->
+<section class="section" id="schema">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div>
+      <div class="section-title">Schema drift<br>vs schema evolution</div>
+      <div class="section-sub">Two different problems that are often confused — and require different solutions</div>
+    </div>
+  </div>
+
+  <div class="drift-grid">
+    <div class="drift-card problem">
+      <div class="drift-title">Schema drift</div>
+      <div class="drift-subtitle">The problem · uncontrolled change</div>
+      <div class="block-text">Schema drift is what happens when <strong>source systems change their data structure without telling anyone</strong> — new columns appear, fields get renamed, data types change. Your pipelines break silently or load incorrect data.<br><br>This is the real-world scenario I've faced: sources changing formats without notification, causing downstream failures that are only discovered when a dashboard goes wrong.</div>
+    </div>
+    <div class="drift-card solution">
+      <div class="drift-title">Schema evolution</div>
+      <div class="drift-subtitle">The capability · controlled adaptation</div>
+      <div class="block-text">Schema evolution is the <strong>deliberate, controlled management of schema changes</strong> over time — absorbing changes from sources without breaking downstream consumers, and doing so in a way that is tracked, auditable and reversible.<br><br>The goal is not to prevent change — sources will always change. The goal is to make your platform resilient to change by design.</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-label">The real challenge</div>
+    <div class="quote-text">"The technical problem of schema evolution is largely solved by modern tooling. The governance problem — knowing that a change happened, understanding its impact, and deciding whether to absorb it or reject it — is not solved by any tool out of the box. That's what you need to build."</div>
+  </div>
+
+  <div class="case-block full coral-l" style="margin-bottom:1.25rem;">
+    <div class="block-label">What the tooling handles — and what it doesn't</div>
+    <div class="tech-compare" style="grid-template-columns: 1fr 1fr 1fr;">
+      <div class="tech-col">
+        <div class="tech-col-title" style="color:var(--accent);">Delta Lake (Azure · Platform 01)</div>
+        <div class="tech-item"><strong>mergeSchema</strong> — used via ADF to automatically merge incoming schema changes into existing Delta tables. New columns are added, existing ones preserved.</div>
+        <div class="tech-item"><strong>Schema on write</strong> — Delta enforces the schema at write time, which catches unexpected changes before they corrupt data.</div>
+        <div class="tech-item"><strong>Time travel</strong> — every version of the table is preserved, so schema changes can be rolled back by reading a previous snapshot.</div>
+        <div class="tech-item"><strong>ACID transactions</strong> — schema changes are atomic, so partial writes on schema mismatch never leave the table in an inconsistent state.</div>
+        <div class="tech-item limitation">overwriteSchema requires explicit opt-in — prevents accidental destructive changes but adds friction for intentional ones.</div>
+      </div>
+      <div class="tech-col">
+        <div class="tech-col-title" style="color:var(--snow);">Apache Iceberg (Platform 02)</div>
+        <div class="tech-item"><strong>Add columns</strong> — metadata-only, no data rewrite. Old files return NULL for new columns.</div>
+        <div class="tech-item"><strong>Drop columns</strong> — removed from schema, existing data files untouched.</div>
+        <div class="tech-item"><strong>Rename columns</strong> — safe because Iceberg tracks columns by unique ID, not by name or position.</div>
+        <div class="tech-item"><strong>Type widening</strong> — e.g. int → bigint. No data rewrite required.</div>
+        <div class="tech-item limitation">Breaking changes (narrowing types, dropping required columns) still need manual management.</div>
+      </div>
+      <div class="tech-col">
+        <div class="tech-col-title" style="color:var(--azure);">Snowflake (Platform 02)</div>
+        <div class="tech-item"><strong>INFER_SCHEMA</strong> — automatically detects schema from staged files (Parquet, JSON, CSV, Avro).</div>
+        <div class="tech-item"><strong>Schema evolution via COPY INTO</strong> — detects new columns and adds them to the target table automatically.</div>
+        <div class="tech-item"><strong>Snowpipe Streaming</strong> — supports schema detection and evolution for streaming ingestion with Kafka connector.</div>
+        <div class="tech-item limitation">Limited to COPY INTO and Snowpipe — INSERT operations cannot evolve the target table schema automatically.</div>
+        <div class="tech-item limitation">We evaluated COPY INTO but it didn't fit our ingestion pattern, which relied on INSERT operations.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-block full accent-l">
+    <div class="block-label">Our approach — governance layer on top of the tooling</div>
+    <div class="block-text" style="margin-bottom:1rem;">Because neither Snowflake's COPY INTO nor Iceberg's native evolution covered our ingestion pattern fully, we built a <strong>governance layer as a Stored Procedure</strong> that sits between source ingestion and the Bronze layer:</div>
+    <div class="approach-grid">
+      <div class="approach-step">
+        <div class="step-num">01 · Detect</div>
+        <div class="step-title">Schema comparison on ingestion</div>
+        <div class="step-text">On every load, the SP compares the incoming file schema against the registered schema for that source. Any difference is flagged — new columns, renamed fields, type changes.</div>
+      </div>
+      <div class="approach-step">
+        <div class="step-num">02 · Decide</div>
+        <div class="step-title">Controlled absorption or rejection</div>
+        <div class="step-text">Not every change is absorbed automatically. Additive changes (new columns) are absorbed. Breaking changes (dropped columns, type narrowing) trigger an alert and halt ingestion until reviewed.</div>
+      </div>
+      <div class="approach-step">
+        <div class="step-num">03 · Document</div>
+        <div class="step-title">Change log and downstream impact</div>
+        <div class="step-text">Every schema change is logged with timestamp, source, change type and affected downstream data products. This closes the governance loop — the change is not just handled, it's traceable.</div>
+      </div>
+    </div>
+    <div class="block-text" style="margin-top:1rem; font-size:13px;">The principle: <strong>tooling handles the mechanics of change; governance handles the meaning of change</strong>. Snowflake and Iceberg tell you how to absorb a schema change without breaking things. Your governance layer tells you whether you should, and what it affects downstream.</div>
+  </div>
+
+  <div class="case-block full">
+    <div class="block-label">Technology stack for schema management</div>
+    <div class="pill-row">
+      <span class="pill s">Apache Iceberg</span>
+      <span class="pill b">Snowflake</span>
+      <span class="pill g">Delta Lake</span>
+      <span class="pill g">Parquet</span>
+      <span class="pill a">Atlan (lineage tracking)</span>
+      <span class="pill">Stored Procedures</span>
+      <span class="pill">Azure DevOps (schema validation gates)</span>
+    </div>
+  </div>
+</section>
+
+<!-- IDEMPOTENCY -->
+<section class="section" id="idempotency">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div>
+      <div class="section-title">Idempotency in<br>data pipelines</div>
+      <div class="section-sub">Designing pipelines that can be safely re-run without producing duplicate or inconsistent data</div>
+    </div>
+  </div>
+
+  <div class="block-grid">
+    <div class="case-block accent-l">
+      <div class="block-label">What it means</div>
+      <div class="block-text">An idempotent pipeline produces the <strong>same result regardless of how many times it runs</strong> with the same input. Whether it runs once, fails midway and retries, or is re-triggered manually — the output is identical and the data isn't duplicated.<br><br>This is not a nice-to-have. In a data platform where pipelines fail and get retried automatically, a non-idempotent pipeline will silently corrupt data every time it recovers from a failure.</div>
+    </div>
+    <div class="case-block amber-l">
+      <div class="block-label">Why Bronze is the right layer to enforce it</div>
+      <div class="block-text">Idempotency must be enforced at the <strong>ingestion layer — Bronze</strong> — because that's where data first enters the platform and where duplicates are cheapest to prevent. If a duplicate survives Bronze, it propagates through Silver and Gold and corrupts every data product downstream.<br><br>Fixing duplicates in Gold is exponentially more expensive than preventing them at the source boundary. The further downstream you detect the problem, the more surface area you have to repair.</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-label">The practical reality</div>
+    <div class="quote-text">"Every pipeline will be re-run at some point — scheduled retries, manual reruns after a failure, backfills after a source fix. If your Bronze layer isn't idempotent, each of those retries is a data quality incident waiting to happen."</div>
+  </div>
+
+  <div class="case-block full azure-l" style="margin-bottom:1.25rem;">
+    <div class="block-label">Ingestion flow — source to Bronze</div>
+    <div class="block-text" style="margin-bottom:1.25rem;">Idempotency is enforced across two hops, not one. Understanding the full flow is key to understanding where and why each control exists:</div>
+    <div class="approach-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="approach-step">
+        <div class="step-num">01</div>
+        <div class="step-title">Source</div>
+        <div class="step-text">Origin system. No guarantees — sources can re-send, rename or silently change files without notification.</div>
+      </div>
+      <div class="approach-step">
+        <div class="step-num">02</div>
+        <div class="step-title">Landing (ADLS · Parquet)</div>
+        <div class="step-text">Raw files written to ADLS as <strong>Parquet files</strong>. Immutable raw record of what the source sent. Read-only — nothing is transformed here.</div>
+      </div>
+      <div class="approach-step">
+        <div class="step-num">03</div>
+        <div class="step-title">Metadata table</div>
+        <div class="step-text">Before processing any file, the pipeline checks this table. Controls what has already been ingested — the gatekeeper between Landing and Bronze.</div>
+      </div>
+      <div class="approach-step">
+        <div class="step-num">04</div>
+        <div class="step-title">Bronze</div>
+        <div class="step-text"><strong>Platform 01:</strong> Delta files on ADLS.<br><strong>Platform 02:</strong> Iceberg tables in Snowflake.<br>Idempotent writes via MERGE on business key.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-block full coral-l" style="margin-bottom:1.25rem;">
+    <div class="block-label">The metadata table — ingestion control layer</div>
+    <div class="block-text" style="margin-bottom:1rem;">The metadata table is the <strong>primary idempotency mechanism</strong>. Before the pipeline processes any Parquet file from the Landing zone, it queries this table to determine whether that file has already been ingested and with what outcome.</div>
+    <div class="block-grid" style="margin-bottom:0.75rem;">
+      <div style="background:var(--paper-warm); border:1px solid var(--rule); border-radius:8px; padding:1rem;">
+        <div class="block-label">Fields tracked</div>
+        <div class="tech-item" style="padding-left:0; font-size:13px; margin-bottom:0.5rem;"><strong>filename</strong> — exact name of the Parquet file in the Landing zone</div>
+        <div class="tech-item" style="padding-left:0; font-size:13px; margin-bottom:0.5rem;"><strong>timestamp</strong> — when the file arrived in Landing</div>
+        <div class="tech-item" style="padding-left:0; font-size:13px; margin-bottom:0.75rem;"><strong>status</strong> — pending / processing / processed / failed</div>
+        <div style="font-size:12px; color:var(--coral); padding-top:0.5rem; border-top:1px solid var(--rule); line-height:1.6;"><strong>Checksum — known gap.</strong> Without a checksum, a source replacing a file with the same name but different content would be silently skipped as already processed. Adding file-level checksum validation is a planned improvement.</div>
+      </div>
+      <div style="background:var(--paper-warm); border:1px solid var(--rule); border-radius:8px; padding:1rem;">
+        <div class="block-label">Pipeline logic per status</div>
+        <div class="block-text" style="font-size:13px; line-height:1.85;">
+          <strong>Not found or pending</strong> — process the file, write to Bronze via MERGE, update status to processed.<br>
+          <strong>Processed</strong> — skip. Already ingested successfully. Safe to ignore on retry.<br>
+          <strong>Failed</strong> — retry. File was picked up but something went wrong. Re-process from scratch — safe because MERGE is idempotent.<br>
+          <strong>Processing</strong> — flag for review. Pipeline died mid-run. Needs manual intervention before retry.
+        </div>
+      </div>
+    </div>
+    <div class="block-text" style="font-size:13px;">The metadata table also serves as an <strong>ingestion audit log</strong> — every file that has passed through the platform is recorded with its full processing history. This closes the lineage loop from source file to Bronze record.</div>
+  </div>
+
+  <div class="case-block full accent-l" style="margin-bottom:1.25rem;">
+    <div class="block-label">MERGE at Bronze — idempotent writes</div>
+    <div class="block-text" style="margin-bottom:1rem;">Once the metadata table confirms a file should be processed, the write to Bronze uses a <strong>MERGE on the business key</strong> — not a plain INSERT. This ensures that even if the same file is processed twice, the result is identical:</div>
+    <div class="approach-grid">
+      <div class="approach-step">
+        <div class="step-num">MATCHED</div>
+        <div class="step-title">Record already exists</div>
+        <div class="step-text">Data changed → UPDATE. Data identical → do nothing. No duplicate is created either way.</div>
+      </div>
+      <div class="approach-step">
+        <div class="step-num">NOT MATCHED</div>
+        <div class="step-title">New record</div>
+        <div class="step-text">No match on business key → INSERT. Genuinely new record, not a retry of an existing one.</div>
+      </div>
+      <div class="approach-step">
+        <div class="step-num">NOT MATCHED BY SOURCE</div>
+        <div class="step-title">Record disappeared</div>
+        <div class="step-text">Depending on the data contract: soft-delete or leave untouched. Always an explicit decision, never a side effect of a retry.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block-grid" style="margin-bottom:1.25rem;">
+    <div class="case-block azure-l">
+      <div class="block-label">Delta Lake MERGE (Platform 01)</div>
+      <div class="block-text">Parquet files from the Landing zone were converted to <strong>Delta files on ADLS</strong> via <code style="font-family:'Geist Mono',monospace; font-size:12px; background:var(--paper-warm); padding:1px 6px; border-radius:4px;">MERGE INTO</code>, orchestrated through ADF. Delta's ACID guarantees meant a failed MERGE left the table in a consistent state — no partial writes. Time travel acted as a safety net: unexpected results could be rolled back to the previous snapshot before reprocessing.</div>
+    </div>
+    <div class="case-block snow-l">
+      <div class="block-label">Snowflake MERGE (Platform 02)</div>
+      <div class="block-text">Parquet files from the Landing zone are loaded into <strong>Iceberg tables in Snowflake</strong> via Snowflake's <code style="font-family:'Geist Mono',monospace; font-size:12px; background:var(--paper-warm); padding:1px 6px; border-radius:4px;">MERGE</code>. The business key is defined per source in the data product template. dbt models in Silver use <code style="font-family:'Geist Mono',monospace; font-size:12px; background:var(--paper-warm); padding:1px 6px; border-radius:4px;">unique_key</code> to enforce idempotency at transformation time as well.</div>
+    </div>
+  </div>
+
+  <div class="case-block full">
+    <div class="block-label">Key requirements for an idempotent Bronze layer</div>
+    <div class="block-grid cols-3" style="margin-top:0.75rem; margin-bottom:0;">
+      <div style="padding:0;">
+        <div class="block-label" style="color:var(--accent);">A reliable business key</div>
+        <div class="block-text" style="font-size:13px;">The MERGE needs a key to match on. If the source doesn't provide a stable natural key, you need a surrogate key strategy first. No key, no idempotency.</div>
+      </div>
+      <div style="padding:0; border-left:1px solid var(--rule); padding-left:1.25rem;">
+        <div class="block-label" style="color:var(--azure);">A defined data contract</div>
+        <div class="block-text" style="font-size:13px;">You need to know what "the same record" means for each source. Is it the same if the value changed? Is a soft-deleted record the same as an active one? This lives in the data product template, not in the pipeline code.</div>
+      </div>
+      <div style="padding:0; border-left:1px solid var(--rule); padding-left:1.25rem;">
+        <div class="block-label" style="color:var(--amber);">ACID-capable storage</div>
+        <div class="block-text" style="font-size:13px;">MERGE only works safely with ACID guarantees. Delta Lake and Snowflake both provide this. The Landing zone (plain Parquet) is intentionally read-only — Bronze is always the ACID layer.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-block full" style="margin-top:1.25rem;">
+    <div class="block-label">Technology stack</div>
+    <div class="pill-row">
+      <span class="pill b">ADLS Landing zone</span>
+      <span class="pill g">Parquet (landing)</span>
+      <span class="pill a">Metadata table</span>
+      <span class="pill g">Delta Lake MERGE INTO</span>
+      <span class="pill s">Apache Iceberg (Bronze)</span>
+      <span class="pill b">Snowflake MERGE</span>
+      <span class="pill g">dbt unique_key</span>
+      <span class="pill a">ADF orchestration</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">© 2026 · Alejandro Camacho Segura · Data Architect</div>
+  <a href="https://www.linkedin.com/in/alejandro-camacho-segura-026b2132/" target="_blank" style="font-family:'Geist Mono',monospace; font-size:12px; color:var(--accent); text-decoration:none;">LinkedIn</a>
+</footer>
+
+</body>
+</html>
